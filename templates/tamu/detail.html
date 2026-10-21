@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Detail Tamu{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Detail Tamu</h1>
+<div style="background: #fff; padding: 24px; border-radius: 8px;">
+    <p><strong>NIK / Paspor:</strong> {{ tamu.nik_paspor }}</p>
+    <p><strong>Nama:</strong> {{ tamu.nama_lengkap }}</p>
+    <p><strong>Email:</strong> {{ tamu.email }}</p>
+    <p><strong>Telepon:</strong> {{ tamu.nomor_telepon }}</p>
+    <p><strong>Alamat:</strong> {{ tamu.alamat }}</p>
+    <a href="{{ url_for('tamu.index') }}" class="btn btn-primary" style="margin-top: 15px;">Kembali</a>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Activity Logs{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Activity Logs System</h1>
+
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Pengguna</th>
+                <th>Aktivitas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for l in logs %}
+            <tr>
+                <td>{{ l.timestamp }}</td>
+                <td><strong>{{ l.username }}</strong></td>
+                <td>{{ l.aktivitas }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Data Tamu{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h1 class="page-title" style="margin-bottom: 0;">Data Tamu</h1>
+    <a href="{{ url_for('tamu.tambah') }}" class="btn btn-gold">+ Tambah Tamu</a>
+</div>
+
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>NIK / Paspor</th>
+                <th>Nama Lengkap</th>
+                <th>Email</th>
+                <th>No. Telepon</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in tamu_list %}
+            <tr>
+                <td>{{ t.nik_paspor }}</td>
+                <td>{{ t.nama_lengkap }}</td>
+                <td>{{ t.email or '-' }}</td>
+                <td>{{ t.nomor_telepon }}</td>
+                <td>
+                    <a href="{{ url_for('tamu.edit', id=t.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    <form action="{{ url_for('tamu.hapus', id=t.id) }}" method="POST" style="display:inline;" onsubmit="return confirmDeletion();">
+                        <button class="btn btn-sm" style="background-color: #ef4444; color: #fff;">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" style="text-align:center;">Belum ada data tamu.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

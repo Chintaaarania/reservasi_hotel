@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Proses Check-In & Check-Out{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Check-In & Check-Out</h1>
+
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Kode</th>
+                <th>Tamu</th>
+                <th>Kamar</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Status</th>
+                <th>Aksi Operasional</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in reservasi_list %}
+            <tr>
+                <td><strong>{{ r.kode_reservasi }}</strong></td>
+                <td>{{ r.nama_tamu }}</td>
+                <td>{{ r.nomor_kamar }}</td>
+                <td>{{ r.tanggal_checkin }}</td>
+                <td>{{ r.tanggal_checkout }}</td>
+                <td>
+                    {% if r.status_reservasi == 'booking' %}<span class="badge badge-warning">Siap Check-In</span>
+                    {% elif r.status_reservasi == 'checkin' %}<span class="badge badge-success">In-House</span>{% endif %}
+                </td>
+                <td>
+                    {% if r.status_reservasi == 'booking' %}
+                    <form action="{{ url_for('checkin_checkout.checkin', id=r.id) }}" method="POST" style="display:inline;">
+                        <button class="btn btn-sm btn-gold">Proses Check-In</button>
+                    </form>
+                    {% elif r.status_reservasi == 'checkin' %}
+                    <form action="{{ url_for('checkin_checkout.checkout', id=r.id) }}" method="POST" style="display:inline;">
+                        <button class="btn btn-sm btn-primary">Proses Check-Out</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" style="text-align:center;">Tidak ada reservasi aktif saat ini.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

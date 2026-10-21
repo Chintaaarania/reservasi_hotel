@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - Hotel Management{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Overview Operasional</h1>
+
+<div class="card-grid">
+    <div class="stat-card">
+        <div class="title">Total Kamar</div>
+        <div class="value">{{ total_kamar }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="title">Kamar Terisi</div>
+        <div class="value">{{ kamar_terisi }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="title">Reservasi Aktif</div>
+        <div class="value">{{ reservasi_aktif }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="title">Total Tamu</div>
+        <div class="value">{{ total_tamu }}</div>
+    </div>
+</div>
+{% endblock %}

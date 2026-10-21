@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Fasilitas Hotel{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Fasilitas Hotel</h1>
+
+<div style="display: flex; gap: 20px;">
+    <div style="background: #fff; padding: 20px; border-radius: 8px; width: 350px; height: fit-content;">
+        <h3>Tambah Fasilitas</h3>
+        <form action="{{ url_for('fasilitas.tambah') }}" method="POST" style="margin-top: 15px;">
+            <div class="form-group">
+                <label>Nama Fasilitas</label>
+                <input type="text" name="nama_fasilitas" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Keterangan</label>
+                <input type="text" name="keterangan" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-gold" style="width: 100%;">Tambah</button>
+        </form>
+    </div>
+
+    <div class="table-container" style="flex: 1;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Fasilitas</th>
+                    <th>Keterangan</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in fasilitas_list %}
+                <tr>
+                    <td><strong>{{ f.nama_fasilitas }}</strong></td>
+                    <td>{{ f.keterangan or '-' }}</td>
+                    <td>
+                        <form action="{{ url_for('fasilitas.hapus', id=f.id) }}" method="POST" onsubmit="return confirmDeletion();">
+                            <button class="btn btn-sm" style="background-color: #ef4444; color: #fff;">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3" style="text-align: center;">Belum ada fasilitas.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

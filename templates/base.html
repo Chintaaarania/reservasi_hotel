@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistem Reservasi Hotel{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <h3>Hotel<span>Grand</span></h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="{% if request.blueprint == 'dashboard' %}active{% endif %}"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+            <li class="{% if request.blueprint == 'reservasi' %}active{% endif %}"><a href="{{ url_for('reservasi.index') }}">Reservasi</a></li>
+            <li class="{% if request.blueprint == 'checkin_checkout' %}active{% endif %}"><a href="{{ url_for('checkin_checkout.index') }}">Check-In / Out</a></li>
+            <li class="{% if request.blueprint == 'tamu' %}active{% endif %}"><a href="{{ url_for('tamu.index') }}">Data Tamu</a></li>
+            <li class="{% if request.blueprint == 'kamar' %}active{% endif %}"><a href="{{ url_for('kamar.index') }}">Data Kamar</a></li>
+            <li class="{% if request.blueprint == 'tipe_kamar' %}active{% endif %}"><a href="{{ url_for('tipe_kamar.index') }}">Tipe Kamar</a></li>
+            <li class="{% if request.blueprint == 'fasilitas' %}active{% endif %}"><a href="{{ url_for('fasilitas.index') }}">Fasilitas</a></li>
+            <li class="{% if request.blueprint == 'layanan' %}active{% endif %}"><a href="{{ url_for('layanan.index') }}">Layanan</a></li>
+            <li class="{% if request.blueprint == 'pembayaran' %}active{% endif %}"><a href="{{ url_for('pembayaran.index') }}">Pembayaran</a></li>
+            <li class="{% if request.blueprint == 'laporan' %}active{% endif %}"><a href="{{ url_for('laporan.index') }}">Laporan</a></li>
+            <li class="{% if request.blueprint == 'pengaturan' %}active{% endif %}"><a href="{{ url_for('pengaturan.index') }}">Pengaturan</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
+        <header class="top-header">
+            <div class="header-title">
+                <strong>Sistem Operasional Hotel</strong>
+            </div>
+            <div class="user-profile">
+                <div class="user-avatar">{{ session.get('username', 'U')[0].upper() }}</div>
+                <span>{{ session.get('nama_lengkap', 'User') }}</span>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-danger" style="margin-left: 10px;">Logout</a>
+            </div>
+        </header>
+
+        <main class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible" style="padding: 10px; margin-bottom: 15px; border-radius: 4px; background-color: #e2e8f0;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

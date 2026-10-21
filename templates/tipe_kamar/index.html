@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Tipe Kamar{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h1 class="page-title" style="margin-bottom: 0;">Tipe Kamar</h1>
+    <a href="{{ url_for('tipe_kamar.tambah') }}" class="btn btn-gold">+ Tambah Tipe Kamar</a>
+</div>
+
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Nama Tipe</th>
+                <th>Harga / Malam</th>
+                <th>Kapasitas</th>
+                <th>Deskripsi</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in tipe_list %}
+            <tr>
+                <td><strong>{{ t.nama_tipe }}</strong></td>
+                <td>Rp {{ "{:,.0f}".format(t.harga_per_malam) }}</td>
+                <td>{{ t.kapasitas }} Orang</td>
+                <td>{{ t.deskripsi or '-' }}</td>
+                <td>
+                    <a href="{{ url_for('tipe_kamar.edit', id=t.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    <form action="{{ url_for('tipe_kamar.hapus', id=t.id) }}" method="POST" style="display:inline;" onsubmit="return confirmDeletion();">
+                        <button class="btn btn-sm" style="background-color: #ef4444; color: #fff;">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

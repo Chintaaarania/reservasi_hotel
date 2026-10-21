@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Pengaturan Sistem{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Pengaturan Sistem</h1>
+
+<div style="background: #fff; padding: 24px; border-radius: 8px; max-width: 600px;">
+    <h3>Profil Hotel</h3>
+    <p style="margin-top: 10px; color: var(--text-muted);">Kelola informasi umum hotel dan log aktivitas pengguna.</p>
+    
+    {% if session.get('role') == 'admin' %}
+    <a href="{{ url_for('pengaturan.log') }}" class="btn btn-gold" style="margin-top: 15px;">Lihat Activity Log</a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Detail Reservasi{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Detail Reservasi #{{ reservasi.kode_reservasi }}</h1>
+
+<div style="background: #fff; padding: 24px; border-radius: 8px; max-width: 600px;">
+    <p><strong>Nama Tamu:</strong> {{ reservasi.nama_tamu }} ({{ reservasi.nomor_telepon }})</p>
+    <p><strong>Kamar:</strong> {{ reservasi.nomor_kamar }} ({{ reservasi.nama_tipe }})</p>
+    <p><strong>Check-In:</strong> {{ reservasi.tanggal_checkin }}</p>
+    <p><strong>Check-Out:</strong> {{ reservasi.tanggal_checkout }} ({{ reservasi.total_malam }} Malam)</p>
+    <p><strong>Total Biaya:</strong> Rp {{ "{:,.0f}".format(reservasi.total_harga) }}</p>
+    <p><strong>Status:</strong> {{ reservasi.status_reservasi|upper }}</p>
+    <a href="{{ url_for('reservasi.index') }}" class="btn btn-primary" style="margin-top: 15px;">Kembali</a>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Data Kamar{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h1 class="page-title" style="margin-bottom: 0;">Data Kamar</h1>
+    <a href="{{ url_for('kamar.tambah') }}" class="btn btn-gold">+ Tambah Kamar</a>
+</div>
+
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>No. Kamar</th>
+                <th>Tipe Kamar</th>
+                <th>Harga / Malam</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for k in kamar_list %}
+            <tr>
+                <td><strong>{{ k.nomor_kamar }}</strong></td>
+                <td>{{ k.nama_tipe }}</td>
+                <td>Rp {{ "{:,.0f}".format(k.harga_per_malam) }}</td>
+                <td>
+                    {% if k.status == 'tersedia' %}<span class="badge badge-success">Tersedia</span>
+                    {% elif k.status == 'terisi' %}<span class="badge badge-danger">Terisi</span>
+                    {% else %}<span class="badge badge-warning">{{ k.status|capitalize }}</span>{% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('kamar.edit', id=k.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    <form action="{{ url_for('kamar.hapus', id=k.id) }}" method="POST" style="display:inline;" onsubmit="return confirmDeletion();">
+                        <button class="btn btn-sm" style="background-color: #ef4444; color: #fff;">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
