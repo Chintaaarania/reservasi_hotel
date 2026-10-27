@@ -13,14 +13,14 @@ def index():
 
 @pengaturan_bp.route('/log')
 def log():
-    if 'user_id' not in session or session.get('role') != 'admin':
-        return redirect(url_for('dashboard.index'))
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
 
     logs = db.session.execute(db.text("""
         SELECT al.*, u.username 
         FROM activity_log al
         JOIN users u ON al.user_id = u.id
-        ORDER BY al.timestamp DESC
+        ORDER BY al.created_at DESC
     """)).fetchall()
 
     return render_template('pengaturan/log.html', logs=logs)

@@ -1,0 +1,285 @@
+{
+  "activity_log": {
+    "1": {
+      "id": 1,
+      "user_id": 1,
+      "aktivitas": "Membuat reservasi RES-72C8497B",
+      "created_at": "2026-10-21 04:03:44",
+      "timestamp": "2026-10-21 04:06:17"
+    },
+    "2": {
+      "id": 2,
+      "user_id": 1,
+      "aktivitas": "Membuat reservasi RES-4B1C3F91",
+      "created_at": "2026-10-21 04:16:07",
+      "timestamp": "2026-10-21 04:16:07"
+    },
+    "3": {
+      "id": 3,
+      "user_id": 1,
+      "aktivitas": "Memperbarui status reservasi",
+      "created_at": "2026-10-22 09:10:00",
+      "timestamp": "2026-10-22 09:10:00"
+    }
+  },
+  "fasilitas": {
+    "1": {
+      "id": 1,
+      "nama_fasilitas": "Wi-Fi Gratis",
+      "keterangan": null,
+      "deskripsi": "Koneksi internet cepat di seluruh area kamar",
+      "biaya": 0.0,
+      "created_at": "2026-10-21 03:57:55"
+    },
+    "2": {
+      "id": 2,
+      "nama_fasilitas": "AC",
+      "keterangan": null,
+      "deskripsi": "Pendingin ruangan",
+      "biaya": 0.0,
+      "created_at": "2026-10-21 03:57:55"
+    },
+    "3": {
+      "id": 3,
+      "nama_fasilitas": "Kolam Renang",
+      "keterangan": null,
+      "deskripsi": "Akses ke kolam renang outdoor",
+      "biaya": 0.0,
+      "created_at": "2026-10-21 03:57:55"
+    }
+  },
+  "kamar": {
+    "1": {
+      "id": 1,
+      "nomor_kamar": "101",
+      "tipe_kamar_id": 1,
+      "lantai": 1,
+      "status": "tersedia"
+    },
+    "2": {
+      "id": 2,
+      "nomor_kamar": "102",
+      "tipe_kamar_id": 1,
+      "lantai": 1,
+      "status": "tersedia"
+    },
+    "3": {
+      "id": 3,
+      "nomor_kamar": "201",
+      "tipe_kamar_id": 2,
+      "lantai": 2,
+      "status": "tersedia"
+    }
+  },
+  "kamar_fasilitas": {
+    "1": {
+      "kamar_id": 1,
+      "fasilitas_id": 1
+    },
+    "2": {
+      "kamar_id": 1,
+      "fasilitas_id": 2
+    },
+    "3": {
+      "kamar_id": 2,
+      "fasilitas_id": 1
+    }
+  },
+  "layanan": {
+    "1": {
+      "id": 1,
+      "nama_layanan": "Laundry Express",
+      "deskripsi": "Cuci dan setrika pakaian (per kg)",
+      "harga": 25000.0,
+      "created_at": "2026-10-21 04:01:17"
+    },
+    "2": {
+      "id": 2,
+      "nama_layanan": "Room Service - Nasi Goreng",
+      "deskripsi": "Layanan antar makanan ke kamar",
+      "harga": 45000.0,
+      "created_at": "2026-10-21 04:01:17"
+    },
+    "3": {
+      "id": 3,
+      "nama_layanan": "Layanan Antar Jemput Bandara",
+      "deskripsi": "Shuttle car dari/ke bandara",
+      "harga": 150000.0,
+      "created_at": "2026-10-21 04:01:17"
+    }
+  },
+  "pembayaran": {
+    "1": {
+      "id": 1,
+      "reservasi_id": 2,
+      "metode_pembayaran": "kartu_kredit",
+      "jumlah_bayar": 800000.0,
+      "status_pembayaran": "dp",
+      "tanggal_bayar": "2026-10-21 04:04:01"
+    },
+    "2": {
+      "id": 2,
+      "reservasi_id": 3,
+      "metode_pembayaran": "transfer",
+      "jumlah_bayar": 5000000.0,
+      "status_pembayaran": "dp",
+      "tanggal_bayar": "2026-10-21 04:20:00"
+    },
+    "3": {
+      "id": 3,
+      "reservasi_id": 2,
+      "metode_pembayaran": "qris",
+      "jumlah_bayar": 250000.0,
+      "status_pembayaran": "lunas",
+      "tanggal_bayar": "2026-10-22 10:00:00"
+    }
+  },
+  "reservasi": {
+    "1": {
+      "id": 1,
+      "kode_reservasi": "RES-1A2B3C4D",
+      "tamu_id": 1,
+      "kamar_id": 1,
+      "tanggal_checkin": "2026-10-01",
+      "tanggal_checkout": "2026-10-03",
+      "total_malam": 2,
+      "total_harga": 700000.0,
+      "status_reservasi": "checkout",
+      "user_id": 1,
+      "created_at": "2026-09-30 10:00:00"
+    },
+    "2": {
+      "id": 2,
+      "kode_reservasi": "RES-72C8497B",
+      "tamu_id": 1,
+      "kamar_id": 1,
+      "tanggal_checkin": "2026-10-21",
+      "tanggal_checkout": "2026-10-24",
+      "total_malam": 3,
+      "total_harga": 1050000.0,
+      "status_reservasi": "booking",
+      "user_id": 1,
+      "created_at": "2026-10-21 04:03:44"
+    },
+    "3": {
+      "id": 3,
+      "kode_reservasi": "RES-4B1C3F91",
+      "tamu_id": 2,
+      "kamar_id": 3,
+      "tanggal_checkin": "2026-10-07",
+      "tanggal_checkout": "2026-10-29",
+      "total_malam": 22,
+      "total_harga": 16500000.0,
+      "status_reservasi": "booking",
+      "user_id": 1,
+      "created_at": "2026-10-21 04:16:07"
+    }
+  },
+  "tamu": {
+    "1": {
+      "id": 1,
+      "kode_tamu": "TAM-001",
+      "nik_paspor": "3511012304990001",
+      "nama_lengkap": "Budi Santoso",
+      "email": "budi@gmail.com",
+      "nomor_telepon": "081234567890",
+      "alamat": "bb",
+      "created_at": "2026-10-21 03:53:48"
+    },
+    "2": {
+      "id": 2,
+      "kode_tamu": "TAM-002",
+      "nik_paspor": "1234567890123456",
+      "nama_lengkap": "surya pertama",
+      "email": "surya.12@gmail.com",
+      "nomor_telepon": "082345678909",
+      "alamat": "surabaya",
+      "created_at": "2026-10-21 03:56:13"
+    },
+    "3": {
+      "id": 3,
+      "kode_tamu": "TAM-003",
+      "nik_paspor": "3578011505010003",
+      "nama_lengkap": "Siti Aminah",
+      "email": "siti@gmail.com",
+      "nomor_telepon": "083456789012",
+      "alamat": "Malang",
+      "created_at": "2026-10-22 08:20:00"
+    }
+  },
+  "tipe_kamar": {
+    "1": {
+      "id": 1,
+      "nama_tipe": "Standard Room",
+      "harga_per_malam": 350000.0,
+      "kapasitas": 2,
+      "deskripsi": "Kamar standar AC"
+    },
+    "2": {
+      "id": 2,
+      "nama_tipe": "Deluxe Suite",
+      "harga_per_malam": 750000.0,
+      "kapasitas": 2,
+      "deskripsi": "Kamar mewah dengan king bed"
+    },
+    "3": {
+      "id": 3,
+      "nama_tipe": "Family Room",
+      "harga_per_malam": 900000.0,
+      "kapasitas": 4,
+      "deskripsi": "Kamar keluarga dengan kapasitas hingga 4 orang"
+    }
+  },
+  "users": {
+    "1": {
+      "id": 1,
+      "username": "admin",
+      "password_hash": "scrypt:32768:8:1$IqjCfeqqZhVJic5x$6a25d8a46b6ffad56041ea59b1f92b4f0763943e95e35d4f1502dca4721117a7c7da11fd38872b93a052683446d2abd8e2cd7010a93ab4f4bd8214ed7c0b3792",
+      "nama_lengkap": "Administrator",
+      "role": "admin",
+      "created_at": "2026-10-21 03:53:48"
+    },
+    "2": {
+      "id": 2,
+      "username": "resepsionis",
+      "password_hash": "scrypt:32768:8:1$dummyhash2",
+      "nama_lengkap": "Resepsionis Hotel",
+      "role": "resepsionis",
+      "created_at": "2026-10-22 08:00:00"
+    },
+    "3": {
+      "id": 3,
+      "username": "manajer",
+      "password_hash": "scrypt:32768:8:1$dummyhash3",
+      "nama_lengkap": "Manajer Hotel",
+      "role": "manajer",
+      "created_at": "2026-10-22 08:05:00"
+    }
+  },
+  "detail_layanan_reservasi": {
+    "1": {
+      "id": 1,
+      "reservasi_id": 2,
+      "layanan_id": 1,
+      "jumlah": 2,
+      "subtotal": 50000.0,
+      "created_at": "2026-10-21 04:05:00"
+    },
+    "2": {
+      "id": 2,
+      "reservasi_id": 2,
+      "layanan_id": 2,
+      "jumlah": 1,
+      "subtotal": 45000.0,
+      "created_at": "2026-10-21 04:06:00"
+    },
+    "3": {
+      "id": 3,
+      "reservasi_id": 3,
+      "layanan_id": 3,
+      "jumlah": 1,
+      "subtotal": 150000.0,
+      "created_at": "2026-10-21 04:17:00"
+    }
+  }
+}

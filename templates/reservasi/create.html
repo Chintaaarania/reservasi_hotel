@@ -18,13 +18,12 @@
         <div class="form-group">
             <label>Pilih Kamar (Status Tersedia)</label>
             <select name="kamar_id" id="kamar_id" class="form-control" required>
-    <option value="">-- Pilih Kamar --</option>
-    {% for k in kamar_list %}
-    <option value="{{ k.id }}" data-harga="{{ k.harga_per_malam or 0 }}">
-        Kamar {{ k.nomor_kamar }} - {{ k.nama_tipe }} (Rp {{ "{:,.0f}".format(k.harga_per_malam or 0) }}/malam)
-    </option>
-    {% endfor %}
-</select>
+                <option value="">-- Pilih Kamar --</option>
+                {% for k in kamar_list %}
+                <option value="{{ k.id }}" data-harga="{{ k.harga_per_malam or 0 }}">
+                    Kamar {{ k.nomor_kamar }} - {{ k.nama_tipe }} (Rp {{ "{:,.0f}".format(k.harga_per_malam or 0) }}/malam)
+                </option>
+                {% endfor %}
             </select>
         </div>
         <div style="display: flex; gap: 15px;">

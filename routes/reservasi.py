@@ -38,7 +38,13 @@ def buat():
             flash(pesan, 'danger')
 
     tamu_list = db.session.execute(db.text("SELECT * FROM tamu")).fetchall()
-    kamar_list = db.session.execute(db.text("SELECT k.*, tk.nama_tipe FROM kamar k JOIN tipe_kamar tk ON k.tipe_kamar_id = tk.id WHERE k.status = 'tersedia'")).fetchall()
+    kamar_list = db.session.execute(db.text("""
+        SELECT k.*, tk.nama_tipe, tk.harga_per_malam 
+        FROM kamar k 
+        JOIN tipe_kamar tk ON k.tipe_kamar_id = tk.id 
+        WHERE k.status = 'tersedia'
+    """)).fetchall()
+
     return render_template('reservasi/create.html', tamu_list=tamu_list, kamar_list=kamar_list)
 
 @reservasi_bp.route('/detail/<int:id>')

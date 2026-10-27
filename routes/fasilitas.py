@@ -16,6 +16,24 @@ def tambah():
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
 
+    nama = request.form.get('nama_fasilitas')
+    # Ambil input deskripsi/keterangan dari form
+    deskripsi = request.form.get('deskripsi') or request.form.get('keterangan')
+    biaya = request.form.get('biaya', 0)
+
+    db.session.execute(
+        db.text("""
+            INSERT INTO fasilitas (nama_fasilitas, deskripsi, biaya) 
+            VALUES (:nama, :ket, :biaya)
+        """),
+        {'nama': nama, 'ket': deskripsi, 'biaya': biaya}
+    )
+    db.session.commit()
+    flash('Fasilitas berhasil ditambahkan!', 'success')
+    return redirect(url_for('fasilitas.index'))
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+
     db.session.execute(
         db.text("INSERT INTO fasilitas (nama_fasilitas, keterangan) VALUES (:nama, :ket)"),
         {'nama': request.form.get('nama_fasilitas'), 'ket': request.form.get('keterangan')}
