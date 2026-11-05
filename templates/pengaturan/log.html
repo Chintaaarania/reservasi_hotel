@@ -1,27 +1,91 @@
+
 {% extends 'base.html' %}
 {% block title %}Activity Logs{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Activity Logs System</h1>
+<div class="activity-page">
 
-<div class="table-container">
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Timestamp</th>
-                <th>Pengguna</th>
-                <th>Aktivitas</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for l in logs %}
-            <tr>
-                <td>{{ l.timestamp }}</td>
-                <td><strong>{{ l.username }}</strong></td>
-                <td>{{ l.aktivitas }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="activity-header">
+        <div>
+            <h1 class="page-title">Activity Logs System</h1>
+            <p class="activity-subtitle">
+                Riwayat aktivitas yang tercatat dalam sistem reservasi hotel.
+            </p>
+        </div>
+
+        <div class="activity-header-icon">▤</div>
+    </div>
+
+    <div class="activity-summary">
+        <div class="activity-summary-icon">◷</div>
+        <div>
+            <span class="activity-summary-label">Total Aktivitas Tercatat</span>
+            <h2>{{ logs|length }}</h2>
+            <p>Jumlah seluruh aktivitas yang tersimpan.</p>
+        </div>
+    </div>
+
+    <div class="activity-table-card">
+
+        <div class="activity-table-heading">
+            <div>
+                <h3>Riwayat Aktivitas</h3>
+                <p>Daftar aktivitas pengguna dalam sistem.</p>
+            </div>
+
+            <span class="activity-count">{{ logs|length }} Aktivitas</span>
+        </div>
+
+        <div class="activity-table-wrapper">
+            <table class="activity-table">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Timestamp</th>
+                        <th>Pengguna</th>
+                        <th>Aktivitas</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for l in logs %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+
+                        <td>
+                            <span class="activity-time">
+                                {{ l.timestamp }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="activity-user">
+                                {{ l.username }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="activity-description">
+                                {{ l.aktivitas }}
+                            </span>
+                        </td>
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="activity-empty">
+                                <div class="activity-empty-icon">◷</div>
+                                <h4>Belum Ada Aktivitas</h4>
+                                <p>Riwayat aktivitas akan muncul di sini.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
 </div>
 {% endblock %}

@@ -1,39 +1,115 @@
 {% extends 'base.html' %}
-{% block title %}Tipe Kamar{% endblock %}
+
+{% block title %}Tipe Kamar - Hotel Management{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h1 class="page-title" style="margin-bottom: 0;">Tipe Kamar</h1>
-    <a href="{{ url_for('tipe_kamar.tambah') }}" class="btn btn-gold">+ Tambah Tipe Kamar</a>
+
+<div class="room-page">
+
+    <!-- Header -->
+    <div class="room-page-header">
+        <div>
+            <p class="room-subtitle">ACCOMMODATION MANAGEMENT</p>
+            <h1 class="page-title">Tipe Kamar</h1>
+            <p class="room-description">
+                Kelola pilihan kamar dan informasi harga penginapan hotel.
+            </p>
+        </div>
+
+        <a href="{{ url_for('tipe_kamar.tambah') }}" class="room-add-btn">
+            <span>＋</span> Tambah Tipe Kamar
+        </a>
+    </div>
+
+    <!-- Informasi jumlah tipe kamar -->
+    <div class="room-summary">
+        <div class="room-summary-icon">⌂</div>
+        <div>
+            <span>Total Pilihan Kamar</span>
+            <h3>{{ tipe_list|length }} Tipe Kamar</h3>
+        </div>
+    </div>
+
+    <!-- Daftar Kamar -->
+    {% if tipe_list %}
+
+    <div class="room-card-grid">
+
+        {% for t in tipe_list %}
+
+        <div class="room-card">
+
+            <div class="room-image">
+                <!-- PERUBAHAN: Mengambil gambar dari uploads/[t.gambar] dengan fallback ke default-room.jpg -->
+                <img
+                    src="{{ url_for('static', filename='uploads/' ~ (t.gambar if t.gambar else 'default_kamar.jpg')) }}"
+                    alt="Foto {{ t.nama_tipe }}"
+                    onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/kamar/default-room.jpg') }}';"
+                >
+
+                <span class="room-image-label">{{ t.nama_tipe }}</span>
+            </div>
+
+            <div class="room-card-content">
+
+                <div class="room-card-heading">
+                    <h3>{{ t.nama_tipe }}</h3>
+                    <span class="room-capacity">♙ {{ t.kapasitas }} Orang</span>
+                </div>
+
+                <p class="room-card-description">
+                    {{ t.deskripsi or 'Nikmati kenyamanan menginap dengan fasilitas hotel yang tersedia.' }}
+                </p>
+
+                <div class="room-card-divider"></div>
+
+                <div class="room-card-footer">
+                    <div class="room-price">
+                        <span>Harga mulai dari</span>
+                        <strong>
+                            Rp {{ "{:,.0f}".format(t.harga_per_malam|float) }}
+                        </strong>
+                        <small>/ malam</small>
+                    </div>
+
+                    <div class="room-actions">
+                        <a href="{{ url_for('tipe_kamar.edit', id=t.id) }}"
+                           class="room-edit-btn">
+                            Edit
+                        </a>
+
+                        <form
+                            action="{{ url_for('tipe_kamar.hapus', id=t.id) }}"
+                            method="POST"
+                            onsubmit="return confirmDeletion();"
+                        >
+                            <button type="submit" class="room-delete-btn">
+                                Hapus
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="room-empty">
+        <div class="empty-icon">⌂</div>
+        <h3>Belum Ada Tipe Kamar</h3>
+        <p>Silakan tambahkan tipe kamar untuk mulai mengelola pilihan kamar hotel.</p>
+        <a href="{{ url_for('tipe_kamar.tambah') }}" class="btn btn-gold">
+            + Tambah Tipe Kamar
+        </a>
+    </div>
+
+    {% endif %}
+
 </div>
 
-<div class="table-container">
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Nama Tipe</th>
-                <th>Harga / Malam</th>
-                <th>Kapasitas</th>
-                <th>Deskripsi</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for t in tipe_list %}
-            <tr>
-                <td><strong>{{ t.nama_tipe }}</strong></td>
-                <td>Rp {{ "{:,.0f}".format(t.harga_per_malam) }}</td>
-                <td>{{ t.kapasitas }} Orang</td>
-                <td>{{ t.deskripsi or '-' }}</td>
-                <td>
-                    <a href="{{ url_for('tipe_kamar.edit', id=t.id) }}" class="btn btn-sm btn-primary">Edit</a>
-                    <form action="{{ url_for('tipe_kamar.hapus', id=t.id) }}" method="POST" style="display:inline;" onsubmit="return confirmDeletion();">
-                        <button class="btn btn-sm" style="background-color: #ef4444; color: #fff;">Hapus</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
 {% endblock %}

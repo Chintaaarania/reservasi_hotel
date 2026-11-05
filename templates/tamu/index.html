@@ -1,41 +1,121 @@
+
 {% extends 'base.html' %}
+
 {% block title %}Data Tamu{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h1 class="page-title" style="margin-bottom: 0;">Data Tamu</h1>
-    <a href="{{ url_for('tamu.tambah') }}" class="btn btn-gold">+ Tambah Tamu</a>
-</div>
+<div class="guest-page">
 
-<div class="table-container">
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>NIK / Paspor</th>
-                <th>Nama Lengkap</th>
-                <th>Email</th>
-                <th>No. Telepon</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for t in tamu_list %}
-            <tr>
-                <td>{{ t.nik_paspor }}</td>
-                <td>{{ t.nama_lengkap }}</td>
-                <td>{{ t.email or '-' }}</td>
-                <td>{{ t.nomor_telepon }}</td>
-                <td>
-                    <a href="{{ url_for('tamu.edit', id=t.id) }}" class="btn btn-sm btn-primary">Edit</a>
-                    <form action="{{ url_for('tamu.hapus', id=t.id) }}" method="POST" style="display:inline;" onsubmit="return confirmDeletion();">
-                        <button class="btn btn-sm" style="background-color: #ef4444; color: #fff;">Hapus</button>
-                    </form>
-                </td>
-            </tr>
-            {% else %}
-            <tr><td colspan="5" style="text-align:center;">Belum ada data tamu.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- HEADER -->
+    <div class="guest-header">
+        <div>
+            <p class="guest-subtitle">HOTEL GRAND MANAGEMENT</p>
+            <h1 class="page-title">Data Tamu</h1>
+            <p class="guest-description">
+                Kelola informasi dan data tamu yang menginap di hotel.
+            </p>
+        </div>
+
+        <a href="{{ url_for('tamu.tambah') }}" class="guest-add-btn">
+            <span>＋</span> Tambah Tamu
+        </a>
+    </div>
+
+    <!-- INFORMATION CARD -->
+    <div class="guest-info-card">
+        <div class="guest-info-icon">♙</div>
+
+        <div>
+            <span>Manajemen Hotel</span>
+            <h3>Informasi Data Tamu</h3>
+            <p>Daftar informasi tamu Hotel Grand yang telah terdaftar.</p>
+        </div>
+    </div>
+
+    <!-- GUEST TABLE -->
+    <div class="guest-table-card">
+
+        <div class="guest-table-heading">
+            <div>
+                <h3>Daftar Tamu</h3>
+                <p>Informasi identitas dan kontak tamu hotel.</p>
+            </div>
+
+            <span class="guest-count">
+                {{ tamu_list|length }} Tamu Terdaftar
+            </span>
+        </div>
+
+        <div class="guest-table-wrapper">
+            <table class="guest-table">
+
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>NIK / Paspor</th>
+                        <th>Nama Lengkap</th>
+                        <th>Email</th>
+                        <th>No. Telepon</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for t in tamu_list %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+
+                        <td>
+                            <strong class="guest-identity">
+                                {{ t.nik_paspor }}
+                            </strong>
+                        </td>
+
+                        <td class="guest-name">
+                            {{ t.nama_lengkap }}
+                        </td>
+
+                        <td>{{ t.email or '-' }}</td>
+
+                        <td>{{ t.nomor_telepon }}</td>
+
+                        <td>
+                            <div class="guest-action-group">
+
+                                <a href="{{ url_for('tamu.edit', id=t.id) }}"
+                                   class="guest-edit-btn">
+                                    Edit
+                                </a>
+
+                                <form action="{{ url_for('tamu.hapus', id=t.id) }}"
+                                      method="POST"
+                                      class="guest-delete-form"
+                                      onsubmit="return confirmDeletion();">
+
+                                    <button type="submit" class="guest-delete-btn">
+                                        Hapus
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="guest-empty">
+                            <div class="guest-empty-icon">♙</div>
+                            <strong>Belum Ada Data Tamu</strong>
+                            <p>Silakan tambahkan data tamu terlebih dahulu.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

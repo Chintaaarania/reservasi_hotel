@@ -1,49 +1,138 @@
+
 {% extends 'base.html' %}
+
 {% block title %}Buat Reservasi Baru{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Buat Reservasi Baru</h1>
 
-<div style="background: #fff; padding: 24px; border-radius: 8px; max-width: 650px;">
-    <form method="POST">
-        <div class="form-group">
-            <label>Pilih Tamu</label>
-            <select name="tamu_id" class="form-control" required>
-                <option value="">-- Pilih Tamu --</option>
-                {% for t in tamu_list %}
-                <option value="{{ t.id }}">{{ t.nama_lengkap }} ({{ t.nik_paspor }})</option>
-                {% endfor %}
-            </select>
+<div class="reservation-create-page">
+
+    <!-- HEADER -->
+    <div class="reservation-create-header">
+        <div>
+            <p class="reservation-create-subtitle">HOTEL GRAND MANAGEMENT</p>
+            <h1 class="page-title">Buat Reservasi Baru</h1>
+            <p class="reservation-create-description">
+                Masukkan informasi tamu dan detail pemesanan kamar hotel.
+            </p>
         </div>
-        <div class="form-group">
-            <label>Pilih Kamar (Status Tersedia)</label>
-            <select name="kamar_id" id="kamar_id" class="form-control" required>
-                <option value="">-- Pilih Kamar --</option>
-                {% for k in kamar_list %}
-                <option value="{{ k.id }}" data-harga="{{ k.harga_per_malam or 0 }}">
-                    Kamar {{ k.nomor_kamar }} - {{ k.nama_tipe }} (Rp {{ "{:,.0f}".format(k.harga_per_malam or 0) }}/malam)
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-        <div style="display: flex; gap: 15px;">
-            <div class="form-group" style="flex: 1;">
-                <label>Tanggal Check-In</label>
-                <input type="date" name="tanggal_checkin" id="tanggal_checkin" class="form-control" required>
-            </div>
-            <div class="form-group" style="flex: 1;">
-                <label>Tanggal Check-Out</label>
-                <input type="date" name="tanggal_checkout" id="tanggal_checkout" class="form-control" required>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="reservation-form-card">
+
+        <div class="reservation-form-heading">
+            <div class="reservation-form-icon">▤</div>
+            <div>
+                <h3>Informasi Reservasi</h3>
+                <p>Lengkapi data reservasi dengan benar.</p>
             </div>
         </div>
 
-        <div style="background: var(--bg-light); padding: 15px; border-radius: 6px; margin-bottom: 20px;">
-            <p style="margin-bottom: 5px;">Durasi Menginap: <strong id="total_malam_display">-</strong></p>
-            <p style="margin: 0;">Estimasi Total: <strong id="total_harga_display" style="color: var(--gold-primary); font-size: 1.1rem;">-</strong></p>
-        </div>
+        <form method="POST" class="reservation-create-form">
 
-        <button type="submit" class="btn btn-gold">Konfirmasi Reservasi</button>
-        <a href="{{ url_for('reservasi.index') }}" class="btn btn-primary">Batal</a>
-    </form>
+            <!-- PILIH TAMU -->
+            <div class="reservation-form-group">
+                <label>Pilih Tamu</label>
+
+                <select name="tamu_id" class="reservation-form-control" required>
+                    <option value="">-- Pilih Tamu --</option>
+
+                    {% for t in tamu_list %}
+                    <option value="{{ t.id }}">
+                        {{ t.nama_lengkap }} ({{ t.nik_paspor }})
+                    </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <!-- PILIH KAMAR -->
+            <div class="reservation-form-group">
+                <label>Pilih Kamar (Status Tersedia)</label>
+
+                <select name="kamar_id"
+                        id="kamar_id"
+                        class="reservation-form-control"
+                        required>
+
+                    <option value="">-- Pilih Kamar --</option>
+
+                    {% for k in kamar_list %}
+                    <option value="{{ k.id }}"
+                            data-harga="{{ k.harga_per_malam or 0 }}">
+                        Kamar {{ k.nomor_kamar }} - {{ k.nama_tipe }}
+                        (Rp {{ "{:,.0f}".format(k.harga_per_malam or 0) }}/malam)
+                    </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <!-- TANGGAL -->
+            <div class="reservation-date-row">
+
+                <div class="reservation-form-group">
+                    <label>Tanggal Check-In</label>
+
+                    <input type="date"
+                           name="tanggal_checkin"
+                           id="tanggal_checkin"
+                           class="reservation-form-control"
+                           required>
+                </div>
+
+                <div class="reservation-form-group">
+                    <label>Tanggal Check-Out</label>
+
+                    <input type="date"
+                           name="tanggal_checkout"
+                           id="tanggal_checkout"
+                           class="reservation-form-control"
+                           required>
+                </div>
+
+            </div>
+
+            <!-- ESTIMASI -->
+            <div class="reservation-estimation-card">
+
+                <div class="reservation-estimation-heading">
+                    <span>Estimasi Biaya Menginap</span>
+                    <span class="reservation-estimation-icon">Rp</span>
+                </div>
+
+                <div class="reservation-estimation-item">
+                    <span>Durasi Menginap</span>
+                    <strong id="total_malam_display">-</strong>
+                </div>
+
+                <div class="reservation-estimation-divider"></div>
+
+                <div class="reservation-estimation-item">
+                    <span>Estimasi Total</span>
+                    <strong id="total_harga_display">-</strong>
+                </div>
+
+            </div>
+
+            <!-- BUTTON -->
+            <div class="reservation-form-actions">
+
+                <button type="submit" class="reservation-confirm-btn">
+                    Konfirmasi Reservasi
+                </button>
+
+                <a href="{{ url_for('reservasi.index') }}"
+                   class="reservation-cancel-btn">
+                    Batal
+                </a>
+
+            </div>
+
+        </form>
+    </div>
+
 </div>
+
 {% endblock %}

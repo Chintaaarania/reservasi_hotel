@@ -1,35 +1,204 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Sistem Reservasi Hotel</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
     <style>
-        body { display: flex; align-items: center; justify-content: center; height: 100vh; background-color: var(--navy-dark); }
-        .login-card { background: #fff; padding: 32px; border-radius: 8px; width: 100%; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #2D1B14, #4B3025, #65432F);
+            font-family: Arial, sans-serif;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            padding: 38px 35px;
+            background: #4B3025;
+            border: 1px solid #806047;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-icon {
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: #65432F;
+            color: #E6C8A8;
+            font-size: 30px;
+        }
+
+        .login-card h2 {
+            margin: 0 0 8px;
+            text-align: center;
+            color: #E6C8A8;
+            font-size: 25px;
+        }
+
+        .login-subtitle {
+            margin: 0 0 30px;
+            text-align: center;
+            color: #C6A98C;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .login-form-group {
+            margin-bottom: 20px;
+        }
+
+        .login-form-group label {
+            display: block;
+            margin-bottom: 9px;
+            color: #E6C8A8;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .login-form-control {
+            display: block;
+            width: 100%;
+            height: 48px;
+            padding: 12px 15px;
+            border: 1px solid #806047;
+            border-radius: 9px;
+            outline: none;
+            background: #39241C;
+            color: #F5E8D8;
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        .login-form-control::placeholder {
+            color: #A98A70;
+        }
+
+        .login-form-control:focus {
+            border-color: #D9B995;
+            box-shadow: 0 0 0 3px rgba(217, 185, 149, 0.15);
+        }
+
+        .login-error {
+            margin-bottom: 18px;
+            padding: 12px 14px;
+            border: 1px solid #A65D52;
+            border-radius: 8px;
+            background: #59342D;
+            color: #F2C3B9;
+            font-size: 13px;
+        }
+
+        .login-btn {
+            width: 100%;
+            min-height: 48px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 9px;
+            background: #D9B995;
+            color: #3B281E;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .login-btn:hover {
+            background: #E8CCAE;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-footer {
+            margin-top: 25px;
+            padding-top: 18px;
+            border-top: 1px solid #806047;
+            text-align: center;
+            color: #B99B7D;
+            font-size: 11px;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 23px;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="login-card">
-        <h2 style="margin-bottom: 20px; text-align: center; color: var(--navy-dark);">Login Hotel System</h2>
+
+        <div class="login-icon">⌂</div>
+
+        <h2>Hotel Management</h2>
+        <p class="login-subtitle">
+            Sistem Informasi Reservasi Hotel
+            <br>
+            Silakan masuk untuk melanjutkan
+        </p>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div style="color: red; margin-bottom: 10px; font-size: 0.85rem;">{{ message }}</div>
+                    <div class="login-error">{{ message }}</div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
+
         <form method="POST">
-            <div class="form-group">
+
+            <div class="login-form-group">
                 <label>Username</label>
-                <input type="text" name="username" class="form-control" required autofocus>
+                <input
+                    type="text"
+                    name="username"
+                    class="login-form-control"
+                    placeholder="Masukkan username"
+                    required
+                    autofocus
+                >
             </div>
-            <div class="form-group">
+
+            <div class="login-form-group">
                 <label>Password</label>
-                <input type="password" name="password" class="form-control" required>
+                <input
+                    type="password"
+                    name="password"
+                    class="login-form-control"
+                    placeholder="Masukkan password"
+                    required
+                >
             </div>
-            <button type="submit" class="btn btn-gold" style="width: 100%; margin-top: 10px;">Masuk</button>
+
+            <button type="submit" class="login-btn">
+                Masuk ke Sistem
+            </button>
+
         </form>
+
+        <div class="login-footer">
+            Sistem Informasi Reservasi Hotel
+        </div>
+
     </div>
 </body>
 </html>

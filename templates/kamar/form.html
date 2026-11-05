@@ -1,34 +1,77 @@
+
 {% extends 'base.html' %}
 {% block title %}{{ action }} Kamar{% endblock %}
 
 {% block content %}
-<h1 class="page-title">{{ action }} Kamar</h1>
+<div class="room-form-page">
 
-<div style="background: #fff; padding: 24px; border-radius: 8px; max-width: 600px;">
-    <form method="POST">
-        <div class="form-group">
-            <label>Nomor Kamar</label>
-            <input type="text" name="nomor_kamar" class="form-control" value="{{ kamar.nomor_kamar if kamar else '' }}" required>
+    <div class="room-form-header">
+        <div>
+            <h1 class="page-title">{{ action }} Kamar</h1>
+            <p class="room-form-subtitle">
+                Lengkapi informasi kamar hotel pada formulir berikut.
+            </p>
         </div>
-        <div class="form-group">
-            <label>Tipe Kamar</label>
-            <select name="tipe_kamar_id" class="form-control" required>
-                {% for t in tipe_list %}
-                <option value="{{ t.id }}" {% if kamar and kamar.tipe_kamar_id == t.id %}selected{% endif %}>{{ t.nama_tipe }}</option>
-                {% endfor %}
-            </select>
+    </div>
+
+    <div class="room-form-card">
+
+        <div class="room-form-card-heading">
+            <div class="room-form-icon">▣</div>
+            <div>
+                <h3>Informasi Kamar</h3>
+                <p>Masukkan detail kamar dengan benar.</p>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Status</label>
-            <select name="status" class="form-control">
-                <option value="tersedia" {% if kamar and kamar.status == 'tersedia' %}selected{% endif %}>Tersedia</option>
-                <option value="terisi" {% if kamar and kamar.status == 'terisi' %}selected{% endif %}>Terisi</option>
-                <option value="pemeliharaan" {% if kamar and kamar.status == 'pemeliharaan' %}selected{% endif %}>Pemeliharaan</option>
-                <option value="kotor" {% if kamar and kamar.status == 'kotor' %}selected{% endif %}>Kotor</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-gold">Simpan</button>
-        <a href="{{ url_for('kamar.index') }}" class="btn btn-primary">Batal</a>
-    </form>
+
+        <form method="POST" class="room-create-form">
+
+            <div class="room-form-group">
+                <label>Nomor Kamar</label>
+                <input
+                    type="text"
+                    name="nomor_kamar"
+                    class="room-form-control"
+                    value="{{ kamar.nomor_kamar if kamar else '' }}"
+                    placeholder="Contoh: 101"
+                    required
+                >
+            </div>
+
+            <div class="room-form-group">
+                <label>Tipe Kamar</label>
+                <select name="tipe_kamar_id" class="room-form-control" required>
+                    {% for t in tipe_list %}
+                    <option value="{{ t.id }}" {% if kamar and kamar.tipe_kamar_id == t.id %}selected{% endif %}>
+                        {{ t.nama_tipe }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="room-form-group">
+                <label>Status Kamar</label>
+                <select name="status" class="room-form-control">
+                    <option value="tersedia" {% if kamar and kamar.status == 'tersedia' %}selected{% endif %}>Tersedia</option>
+                    <option value="terisi" {% if kamar and kamar.status == 'terisi' %}selected{% endif %}>Terisi</option>
+                    <option value="pemeliharaan" {% if kamar and kamar.status == 'pemeliharaan' %}selected{% endif %}>Pemeliharaan</option>
+                    <option value="kotor" {% if kamar and kamar.status == 'kotor' %}selected{% endif %}>Kotor</option>
+                </select>
+            </div>
+
+            <div class="room-form-divider"></div>
+
+            <div class="room-form-actions">
+                <button type="submit" class="room-save-btn">
+                    Simpan Kamar
+                </button>
+
+                <a href="{{ url_for('kamar.index') }}" class="room-cancel-btn">
+                    Batal
+                </a>
+            </div>
+
+        </form>
+    </div>
 </div>
 {% endblock %}

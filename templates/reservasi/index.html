@@ -1,47 +1,105 @@
+
 {% extends 'base.html' %}
 {% block title %}Daftar Reservasi{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h1 class="page-title" style="margin-bottom: 0;">Daftar Reservasi</h1>
-    <a href="{{ url_for('reservasi.buat') }}" class="btn btn-gold">+ Reservasi Baru</a>
+
+<div class="reservation-page">
+
+    <div class="reservation-header">
+        <div>
+            <p class="reservation-subtitle">HOTEL GRAND MANAGEMENT</p>
+            <h1 class="page-title">Daftar Reservasi</h1>
+            <p class="reservation-description">
+                Kelola dan pantau seluruh data reservasi tamu hotel.
+            </p>
+        </div>
+
+        <a href="{{ url_for('reservasi.buat') }}" class="reservation-add-btn">
+            + Reservasi Baru
+        </a>
+    </div>
+
+    <div class="reservation-summary">
+        <div class="reservation-summary-icon">▤</div>
+        <div>
+            <span>Data Reservasi</span>
+            <h3>Daftar Pemesanan Kamar</h3>
+        </div>
+    </div>
+
+    <div class="reservation-table-card">
+        <div class="reservation-table-heading">
+            <div>
+                <h3>Semua Reservasi</h3>
+                <p>Informasi pemesanan dan status reservasi tamu</p>
+            </div>
+        </div>
+
+        <div class="reservation-table-wrapper">
+            <table class="reservation-table">
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Nama Tamu</th>
+                        <th>Kamar</th>
+                        <th>Check-In</th>
+                        <th>Check-Out</th>
+                        <th>Total Biaya</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for r in reservasi_list %}
+                    <tr>
+                        <td>
+                            <strong class="reservation-code">
+                                {{ r.kode_reservasi }}
+                            </strong>
+                        </td>
+
+                        <td>{{ r.nama_tamu }}</td>
+                        <td>{{ r.nomor_kamar }}</td>
+                        <td>{{ r.tanggal_checkin }}</td>
+                        <td>{{ r.tanggal_checkout }}</td>
+
+                        <td class="reservation-price">
+                            Rp {{ "{:,.0f}".format(r.total_harga) }}
+                        </td>
+
+                        <td>
+                            {% if r.status_reservasi == 'booking' %}
+                                <span class="reservation-status status-booking">Booking</span>
+                            {% elif r.status_reservasi == 'checkin' %}
+                                <span class="reservation-status status-checkin">Check-In</span>
+                            {% elif r.status_reservasi == 'checkout' %}
+                                <span class="reservation-status status-checkout">Check-Out</span>
+                            {% else %}
+                                <span class="reservation-status status-cancelled">Batal</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{{ url_for('reservasi.detail', id=r.id) }}"
+                               class="reservation-detail-btn">
+                                Detail
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="reservation-empty">
+                            Belum ada data reservasi.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 
-<div class="table-container">
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Kode</th>
-                <th>Nama Tamu</th>
-                <th>Kamar</th>
-                <th>Check-In</th>
-                <th>Check-Out</th>
-                <th>Total Biaya</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for r in reservasi_list %}
-            <tr>
-                <td><strong>{{ r.kode_reservasi }}</strong></td>
-                <td>{{ r.nama_tamu }}</td>
-                <td>{{ r.nomor_kamar }}</td>
-                <td>{{ r.tanggal_checkin }}</td>
-                <td>{{ r.tanggal_checkout }}</td>
-                <td>Rp {{ "{:,.0f}".format(r.total_harga) }}</td>
-                <td>
-                    {% if r.status_reservasi == 'booking' %}<span class="badge badge-warning">Booking</span>
-                    {% elif r.status_reservasi == 'checkin' %}<span class="badge badge-success">Check-In</span>
-                    {% elif r.status_reservasi == 'checkout' %}<span class="badge badge-info">Check-Out</span>
-                    {% else %}<span class="badge badge-danger">Batal</span>{% endif %}
-                </td>
-                <td>
-                    <a href="{{ url_for('reservasi.detail', id=r.id) }}" class="btn btn-sm btn-primary">Detail</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
 {% endblock %}

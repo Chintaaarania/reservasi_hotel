@@ -1,15 +1,66 @@
+
 {% extends 'base.html' %}
+
 {% block title %}Pengaturan Sistem{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Pengaturan Sistem</h1>
+<div class="setting-page">
 
-<div style="background: #fff; padding: 24px; border-radius: 8px; max-width: 600px;">
-    <h3>Profil Hotel</h3>
-    <p style="margin-top: 10px; color: var(--text-muted);">Kelola informasi umum hotel dan log aktivitas pengguna.</p>
-    
-    {% if session.get('role') == 'admin' %}
-    <a href="{{ url_for('pengaturan.log') }}" class="btn btn-gold" style="margin-top: 15px;">Lihat Activity Log</a>
-    {% endif %}
+    <!-- HEADER -->
+    <div class="setting-header">
+        <div>
+            <h1 class="page-title">Pengaturan Sistem</h1>
+            <p>Kelola informasi dan aktivitas sistem operasional hotel.</p>
+        </div>
+    </div>
+
+    <!-- PROFIL HOTEL -->
+    <div class="setting-content">
+
+        <div class="setting-card">
+
+            <div class="setting-card-heading">
+                <div class="setting-icon">⚙</div>
+
+                <div>
+                    <h3>Profil Hotel</h3>
+                    <p>Informasi umum dan pengelolaan aktivitas hotel.</p>
+                </div>
+            </div>
+
+            <div class="setting-divider"></div>
+
+            <div class="setting-description">
+                <div class="setting-description-icon">▤</div>
+
+                <div>
+                    <strong>Informasi Sistem Hotel</strong>
+                    <p>
+                        Kelola informasi umum hotel dan pantau aktivitas
+                        pengguna untuk membantu menjaga pengelolaan
+                        sistem tetap teratur.
+                    </p>
+                </div>
+            </div>
+
+            {% if session.get('role') == 'admin' %}
+            <div class="setting-action">
+                <div>
+                    <strong>Activity Log</strong>
+                    <p>Lihat riwayat aktivitas yang tercatat di dalam sistem.</p>
+                </div>
+
+                <a href="{{ url_for('pengaturan.log') }}"
+                   class="setting-log-btn">
+                    Lihat Activity Log
+                    <span>→</span>
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
 </div>
 {% endblock %}

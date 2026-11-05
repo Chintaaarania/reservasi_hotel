@@ -1,75 +1,149 @@
+
 {% extends 'base.html' %}
+
 {% block title %}Transaksi Pembayaran{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Pembayaran & Billing</h1>
+<div class="payment-page">
 
-<div style="display: flex; gap: 20px; margin-bottom: 30px;">
-    <div style="background: #fff; padding: 20px; border-radius: 8px; width: 380px; height: fit-content;">
-        <h3>Catat Pembayaran</h3>
-        <form action="{{ url_for('pembayaran.bayar') }}" method="POST" style="margin-top: 15px;">
-            <div class="form-group">
-                <label>Reservasi</label>
-                <select name="reservasi_id" class="form-control" required>
-                    <option value="">-- Pilih Reservasi Pending --</option>
-                    {% for r in reservasi_pending %}
-                    <option value="{{ r.id }}">{{ r.kode_reservasi }} - {{ r.nama_tamu }} (Rp {{ "{:,.0f}".format(r.total_harga) }})</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Metode Pembayaran</label>
-                <select name="metode_pembayaran" class="form-control" required>
-                    <option value="tunai">Tunai</option>
-                    <option value="transfer">Transfer Bank</option>
-                    <option value="kartu_kredit">Kartu Kredit</option>
-                    <option value="qris">QRIS</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Jumlah Bayar (Rp)</label>
-                <input type="number" name="jumlah_bayar" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label>Status Pembayaran</label>
-                <select name="status_pembayaran" class="form-control">
-                    <option value="lunas">Lunas</option>
-                    <option value="dp">Down Payment (DP)</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-gold" style="width: 100%;">Proses Pembayaran</button>
-        </form>
+    <div class="payment-header">
+        <div>
+            <h1 class="page-title">Pembayaran & Billing</h1>
+            <p>Kelola pembayaran dan riwayat transaksi hotel.</p>
+        </div>
     </div>
 
-    <div class="table-container" style="flex: 1;">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Waktu</th>
-                    <th>Kode Reservasi</th>
-                    <th>Tamu</th>
-                    <th>Metode</th>
-                    <th>Jumlah</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for p in pembayaran_list %}
-                <tr>
-                    <td>{{ p.tanggal_bayar }}</td>
-                    <td><strong>{{ p.kode_reservasi }}</strong></td>
-                    <td>{{ p.nama_tamu }}</td>
-                    <td>{{ p.metode_pembayaran|upper }}</td>
-                    <td>Rp {{ "{:,.0f}".format(p.jumlah_bayar) }}</td>
-                    <td><span class="badge badge-success">{{ p.status_pembayaran|upper }}</span></td>
-                    <td>
-                        <a href="{{ url_for('pembayaran.kwitansi', id=p.id) }}" class="btn btn-sm btn-primary" target="_blank">Kwitansi</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="payment-layout">
+
+        <!-- FORM CATAT PEMBAYARAN -->
+        <div class="payment-form-card">
+            <div class="payment-card-heading">
+                <div>
+                    <h3>Catat Pembayaran</h3>
+                    <p>Masukkan informasi pembayaran reservasi.</p>
+                </div>
+                <div class="payment-heading-icon">Rp</div>
+            </div>
+
+            <form action="{{ url_for('pembayaran.bayar') }}" method="POST" class="payment-form">
+
+                <div class="payment-form-group">
+                    <label>Reservasi</label>
+                    <select name="reservasi_id" class="form-control" required>
+                        <option value="">-- Pilih Reservasi Pending --</option>
+                        {% for r in reservasi_pending %}
+                        <option value="{{ r.id }}">
+                            {{ r.kode_reservasi }} - {{ r.nama_tamu }}
+                            (Rp {{ "{:,.0f}".format(r.total_harga) }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="payment-form-group">
+                    <label>Metode Pembayaran</label>
+                    <select name="metode_pembayaran" class="form-control" required>
+                        <option value="tunai">Tunai</option>
+                        <option value="transfer">Transfer Bank</option>
+                        <option value="kartu_kredit">Kartu Kredit</option>
+                        <option value="qris">QRIS</option>
+                    </select>
+                </div>
+
+                <div class="payment-form-group">
+                    <label>Jumlah Bayar (Rp)</label>
+                    <input type="number" name="jumlah_bayar" class="form-control" required>
+                </div>
+
+                <div class="payment-form-group">
+                    <label>Status Pembayaran</label>
+                    <select name="status_pembayaran" class="form-control">
+                        <option value="lunas">Lunas</option>
+                        <option value="dp">Down Payment (DP)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="payment-submit-btn">
+                    Proses Pembayaran
+                </button>
+
+            </form>
+        </div>
+
+        <!-- RIWAYAT PEMBAYARAN -->
+        <div class="payment-history-card">
+
+            <div class="payment-card-heading history-heading">
+                <div>
+                    <h3>Riwayat Pembayaran</h3>
+                    <p>Daftar transaksi pembayaran yang telah dicatat.</p>
+                </div>
+                <span class="payment-count">
+                    {{ pembayaran_list|length }} Transaksi
+                </span>
+            </div>
+
+            <div class="payment-table-wrapper">
+                <table class="payment-table">
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Kode Reservasi</th>
+                            <th>Tamu</th>
+                            <th>Metode</th>
+                            <th>Jumlah</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for p in pembayaran_list %}
+                        <tr>
+                            <td>{{ p.tanggal_bayar }}</td>
+                            <td>
+                                <strong class="payment-code">
+                                    {{ p.kode_reservasi }}
+                                </strong>
+                            </td>
+                            <td>{{ p.nama_tamu }}</td>
+                            <td>
+                                <span class="payment-method">
+                                    {{ p.metode_pembayaran|upper }}
+                                </span>
+                            </td>
+                            <td>
+                                <strong class="payment-amount">
+                                    Rp {{ "{:,.0f}".format(p.jumlah_bayar) }}
+                                </strong>
+                            </td>
+                            <td>
+                                <span class="payment-status">
+                                    {{ p.status_pembayaran|upper }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('pembayaran.kwitansi', id=p.id) }}"
+                                   class="payment-receipt-btn"
+                                   target="_blank">
+                                    Kwitansi
+                                </a>
+                            </td>
+                        </tr>
+
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="payment-empty">
+                                <div>Belum ada riwayat pembayaran.</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
     </div>
 </div>
 {% endblock %}

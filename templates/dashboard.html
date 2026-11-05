@@ -1,25 +1,127 @@
+
 {% extends 'base.html' %}
+
 {% block title %}Dashboard - Hotel Management{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Overview Operasional</h1>
 
-<div class="card-grid">
-    <div class="stat-card">
-        <div class="title">Total Kamar</div>
-        <div class="value">{{ total_kamar }}</div>
+<div class="dashboard-container">
+
+    <!-- Header Dashboard -->
+    <div class="dashboard-heading">
+        <div>
+            <p class="dashboard-subtitle">HOTEL MANAGEMENT SYSTEM</p>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="dashboard-description">
+                Selamat datang di halaman utama pengelolaan hotel.
+                Pantau aktivitas dan informasi hotel melalui dashboard ini.
+            </p>
+        </div>
+        <div class="dashboard-date">
+            <span>Overview Operasional</span>
+            <strong>Hotel Management</strong>
+        </div>
     </div>
-    <div class="stat-card">
-        <div class="title">Kamar Terisi</div>
-        <div class="value">{{ kamar_terisi }}</div>
+
+    <!-- Statistik -->
+    <div class="dashboard-stats">
+
+        <div class="dashboard-stat-card">
+            <div class="stat-icon room-icon">▦</div>
+            <div class="stat-info">
+                <p>Total Kamar</p>
+                <h2>{{ total_kamar }}</h2>
+                <span>Jumlah seluruh kamar</span>
+            </div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="stat-icon occupied-icon">▣</div>
+            <div class="stat-info">
+                <p>Kamar Terisi</p>
+                <h2>{{ kamar_terisi }}</h2>
+                <span>Kamar sedang digunakan</span>
+            </div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="stat-icon reservation-icon">▤</div>
+            <div class="stat-info">
+                <p>Reservasi Aktif</p>
+                <h2>{{ reservasi_aktif }}</h2>
+                <span>Reservasi berjalan</span>
+            </div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="stat-icon guest-icon">♙</div>
+            <div class="stat-info">
+                <p>Total Tamu</p>
+                <h2>{{ total_tamu }}</h2>
+                <span>Data tamu terdaftar</span>
+            </div>
+        </div>
+
     </div>
-    <div class="stat-card">
-        <div class="title">Reservasi Aktif</div>
-        <div class="value">{{ reservasi_aktif }}</div>
+
+    <!-- Informasi Kamar -->
+    <div class="dashboard-bottom">
+
+        <div class="dashboard-panel occupancy-panel">
+            <div class="panel-heading">
+                <div>
+                    <h3>Informasi Kamar</h3>
+                    <p>Ringkasan penggunaan kamar hotel</p>
+                </div>
+                <span class="panel-icon">⌂</span>
+            </div>
+
+            {% set persentase = ((kamar_terisi / total_kamar) * 100)|round|int if total_kamar > 0 else 0 %}
+
+            <div class="occupancy-content">
+                <div class="occupancy-number">
+                    <strong>{{ persentase }}%</strong>
+                    <span>Tingkat keterisian kamar</span>
+                </div>
+
+                <div class="occupancy-bar">
+                    <div class="occupancy-progress"
+                         style="width: {{ persentase }}%;">
+                    </div>
+                </div>
+
+                <div class="occupancy-detail">
+                    <div>
+                        <span class="status-dot occupied-dot"></span>
+                        Kamar Terisi
+                        <strong>{{ kamar_terisi }}</strong>
+                    </div>
+                    <div>
+                        <span class="status-dot available-dot"></span>
+                        Kamar Belum Terisi
+                        <strong>{{ total_kamar - kamar_terisi }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-panel welcome-panel">
+            <div class="welcome-decoration">✦</div>
+            <p class="welcome-label">WELCOME TO</p>
+            <h3>Hotel Management</h3>
+            <p>
+                Kelola informasi kamar, data tamu, reservasi,
+                pembayaran, dan layanan hotel dengan lebih mudah
+                melalui satu sistem yang terintegrasi.
+            </p>
+            <div class="welcome-footer">
+                <span>Hospitality Management</span>
+                <span>✧</span>
+            </div>
+        </div>
+
     </div>
-    <div class="stat-card">
-        <div class="title">Total Tamu</div>
-        <div class="value">{{ total_tamu }}</div>
-    </div>
+
 </div>
+
 {% endblock %}

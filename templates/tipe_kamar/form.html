@@ -1,29 +1,153 @@
 {% extends 'base.html' %}
+
 {% block title %}{{ action }} Tipe Kamar{% endblock %}
 
 {% block content %}
-<h1 class="page-title">{{ action }} Tipe Kamar</h1>
+<div class="type-form-page">
 
-<div style="background: #fff; padding: 24px; border-radius: 8px; max-width: 600px;">
-    <form method="POST">
-        <div class="form-group">
-            <label>Nama Tipe Kamar</label>
-            <input type="text" name="nama_tipe" class="form-control" value="{{ tipe.nama_tipe if tipe else '' }}" required>
+    <div class="type-form-header">
+        <div>
+            <p class="type-form-subtitle">HOTEL GRAND MANAGEMENT</p>
+            <h1 class="page-title">{{ action }} Tipe Kamar</h1>
+            <p class="type-form-description">
+                Lengkapi informasi tipe kamar hotel pada formulir berikut.
+            </p>
         </div>
-        <div class="form-group">
-            <label>Harga Per Malam (Rp)</label>
-            <input type="number" step="1000" name="harga_per_malam" class="form-control" value="{{ tipe.harga_per_malam if tipe else '' }}" required>
+    </div>
+
+    <div class="type-form-card" style="max-width: 1000px;">
+
+        <div class="type-form-card-heading">
+            <div class="type-form-icon">▤</div>
+            <div>
+                <h3>Informasi Tipe Kamar</h3>
+                <p>Masukkan detail tipe kamar dengan benar.</p>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Kapasitas (Orang)</label>
-            <input type="number" name="kapasitas" class="form-control" value="{{ tipe.kapasitas if tipe else '' }}" required>
-        </div>
-        <div class="form-group">
-            <label>Deskripsi</label>
-            <textarea name="deskripsi" class="form-control" rows="3">{{ tipe.deskripsi if tipe else '' }}</textarea>
-        </div>
-        <button type="submit" class="btn btn-gold">Simpan</button>
-        <a href="{{ url_for('tipe_kamar.index') }}" class="btn btn-primary">Batal</a>
-    </form>
+
+        <!-- PERUBAHAN: Tambahkan enctype="multipart/form-data" -->
+        <form method="POST" enctype="multipart/form-data" class="type-room-form">
+
+            <div style="display: flex; gap: 32px; flex-wrap: wrap;">
+                
+                <!-- Kolom Kiri: Form Input Teks -->
+                <div style="flex: 1; min-width: 300px;">
+                    <div class="type-form-group">
+                        <label>Nama Tipe Kamar</label>
+                        <input
+                            type="text"
+                            name="nama_tipe"
+                            class="type-form-control"
+                            value="{{ tipe.nama_tipe if tipe else '' }}"
+                            placeholder="Contoh: Deluxe Room"
+                            required>
+                    </div>
+
+                    <div class="type-form-group">
+                        <label>Harga Per Malam (Rp)</label>
+                        <input
+                            type="number"
+                            step="1000"
+                            name="harga_per_malam"
+                            class="type-form-control"
+                            value="{{ tipe.harga_per_malam if tipe else '' }}"
+                            placeholder="Contoh: 350000"
+                            required>
+                    </div>
+
+                    <div class="type-form-group">
+                        <label>Kapasitas (Orang)</label>
+                        <input
+                            type="number"
+                            name="kapasitas"
+                            class="type-form-control"
+                            value="{{ tipe.kapasitas if tipe else '' }}"
+                            placeholder="Contoh: 2"
+                            required>
+                    </div>
+
+                    <div class="type-form-group">
+                        <label>Deskripsi</label>
+                        <textarea
+                            name="deskripsi"
+                            class="type-form-control"
+                            rows="4"
+                            placeholder="Masukkan deskripsi tipe kamar...">{{ tipe.deskripsi if tipe else '' }}</textarea>
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan: Pengunggah & Pratinjau Gambar -->
+                <div style="flex: 1; min-width: 300px; border-left: 1px solid #EAEAEA; padding-left: 24px;">
+                    <h3 style="color: #4A3E3D; margin-top: 0; margin-bottom: 16px;">Gambar Kamar</h3>
+                    
+                    {% if action == 'Edit' and tipe and tipe.gambar %}
+                    <!-- Pratinjau Gambar Saat Ini -->
+                    <div style="margin-bottom: 16px;">
+                        <p style="font-size: 13px; color: #666; margin-bottom: 8px;">Gambar Saat Ini:</p>
+                        <img id="current-image" 
+                             src="{{ url_for('static', filename='uploads/' + tipe.gambar) }}" 
+                             alt="Foto {{ tipe.nama_tipe }}" 
+                             style="width: 100%; max-height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;"
+                             onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/kamar/default-room.jpg') }}';"
+                        >
+                        <p style="font-size: 11px; color: #888; margin-top: 4px;">Nama berkas: {{ tipe.gambar }}</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Area Input / Drag-Drop Unggah -->
+                    <div style="border: 2px dashed #C3A68F; border-radius: 8px; padding: 32px 16px; text-align: center; background: #FAF7F2; position: relative;">
+                        <input type="file" name="gambar" accept="image/*" id="gambarInput"
+                               style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;" 
+                               onchange="previewSelectedImage(this)">
+                        
+                        <div id="upload-box-prompt">
+                            <div style="font-size: 32px; color: #8B5A2B; margin-bottom: 8px;">📤</div>
+                            <p style="margin: 4px 0; color: #4A3E3D; font-weight: bold;">Tarik & lepas atau cari gambar di sini</p>
+                            <p style="margin: 0; font-size: 12px; color: #888;">Mendukung format JPG, JPEG, PNG, WEBP (Maks. 2MB)</p>
+                        </div>
+
+                        <!-- Pratinjau Berkas Terpilih -->
+                        <div id="upload-box-preview" style="display: none;">
+                            <img id="new-image-preview" src="#" alt="Pratinjau Baru" style="max-width: 100%; max-height: 140px; border-radius: 6px; margin-bottom: 8px; object-fit: cover;">
+                            <p id="file-name-label" style="margin: 0; font-size: 13px; color: #8B5A2B; font-weight: bold;"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="type-form-actions" style="margin-top: 32px;">
+                <button type="submit" class="type-save-btn">
+                    Simpan
+                </button>
+
+                <a href="{{ url_for('tipe_kamar.index') }}"
+                   class="type-cancel-btn">
+                    Batal
+                </a>
+            </div>
+
+        </form>
+    </div>
 </div>
+
+<script>
+function previewSelectedImage(input) {
+    const promptBox = document.getElementById('upload-box-prompt');
+    const previewBox = document.getElementById('upload-box-preview');
+    const newImage = document.getElementById('new-image-preview');
+    const fileNameLabel = document.getElementById('file-name-label');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            newImage.src = e.target.result;
+            fileNameLabel.textContent = "Berkas terpilih: " + input.files[0].name;
+            promptBox.style.display = 'none';
+            previewBox.style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 {% endblock %}

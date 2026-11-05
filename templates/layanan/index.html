@@ -1,50 +1,130 @@
+
 {% extends 'base.html' %}
 {% block title %}Layanan Tambahan{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Layanan Tambahan</h1>
+<div class="service-page">
 
-<div style="display: flex; gap: 20px;">
-    <div style="background: #fff; padding: 20px; border-radius: 8px; width: 350px; height: fit-content;">
-        <h3>Tambah Layanan</h3>
-        <form action="{{ url_for('layanan.tambah') }}" method="POST" style="margin-top: 15px;">
-            <div class="form-group">
-                <label>Nama Layanan</label>
-                <input type="text" name="nama_layanan" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label>Harga (Rp)</label>
-                <input type="number" step="5000" name="harga" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-gold" style="width: 100%;">Tambah</button>
-        </form>
+    <div class="service-header">
+        <div>
+            <h1>Layanan Tambahan</h1>
+            <p>Kelola layanan tambahan yang tersedia untuk kebutuhan tamu hotel.</p>
+        </div>
     </div>
 
-    <div class="table-container" style="flex: 1;">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Layanan</th>
-                    <th>Harga</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for l in layanan_list %}
-                <tr>
-                    <td><strong>{{ l.nama_layanan }}</strong></td>
-                    <td>Rp {{ "{:,.0f}".format(l.harga) }}</td>
-                    <td>
-                        <form action="{{ url_for('layanan.hapus', id=l.id) }}" method="POST" onsubmit="return confirmDeletion();">
-                            <button class="btn btn-sm" style="background-color: #ef4444; color: #fff;">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
-                {% else %}
-                <tr><td colspan="3" style="text-align: center;">Belum ada layanan.</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="service-summary">
+        <div class="service-summary-card">
+            <div class="service-summary-icon">✦</div>
+            <div>
+                <span>Total Layanan</span>
+                <h2>{{ layanan_list|length }}</h2>
+                <small>Layanan terdaftar</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="service-content">
+
+        <div class="service-form-card">
+            <div class="service-card-heading">
+                <div class="service-heading-icon">+</div>
+                <div>
+                    <h3>Tambah Layanan</h3>
+                    <p>Masukkan informasi layanan baru.</p>
+                </div>
+            </div>
+
+            <form action="{{ url_for('layanan.tambah') }}"
+                  method="POST"
+                  class="service-form">
+
+                <div class="service-form-group">
+                    <label>Nama Layanan</label>
+                    <input type="text"
+                           name="nama_layanan"
+                           class="form-control"
+                           placeholder="Contoh: Laundry"
+                           required>
+                </div>
+
+                <div class="service-form-group">
+                    <label>Harga (Rp)</label>
+                    <input type="number"
+                           step="5000"
+                           name="harga"
+                           class="form-control"
+                           placeholder="Contoh: 50000"
+                           min="0"
+                           required>
+                </div>
+
+                <button type="submit" class="service-submit-btn">
+                    + Tambah Layanan
+                </button>
+            </form>
+        </div>
+
+        <div class="service-table-card">
+            <div class="service-table-heading">
+                <div>
+                    <h3>Daftar Layanan</h3>
+                    <p>Informasi nama dan harga layanan tambahan hotel.</p>
+                </div>
+
+                <span class="service-count">
+                    {{ layanan_list|length }} Data
+                </span>
+            </div>
+
+            <div class="service-table-wrapper">
+                <table class="service-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Nama Layanan</th>
+                            <th>Harga</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for l in layanan_list %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+
+                            <td>
+                                <strong class="service-name">
+                                    {{ l.nama_layanan }}
+                                </strong>
+                            </td>
+
+                            <td class="service-price">
+                                Rp {{ "{:,.0f}".format(l.harga) }}
+                            </td>
+
+                            <td>
+                                <form action="{{ url_for('layanan.hapus', id=l.id) }}"
+                                      method="POST"
+                                      onsubmit="return confirmDeletion();">
+                                    <button type="submit" class="service-delete-btn">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="service-empty">
+                                Belum ada layanan tambahan.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </div>
 {% endblock %}

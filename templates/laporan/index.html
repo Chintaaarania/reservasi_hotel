@@ -1,55 +1,144 @@
+
 {% extends 'base.html' %}
+
 {% block title %}Laporan Pendapatan{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Laporan Pendapatan</h1>
+<div class="report-page">
 
-<div style="background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-    <form method="GET" style="display: flex; gap: 15px; align-items: flex-end;">
-        <div class="form-group" style="margin: 0;">
-            <label>Tanggal Mulai</label>
-            <input type="date" name="start_date" class="form-control" value="{{ start_date or '' }}">
+    <!-- HEADER -->
+    <div class="report-header">
+        <div>
+            <h1 class="page-title">Laporan Pendapatan</h1>
+            <p>Monitor dan kelola laporan transaksi pendapatan hotel.</p>
         </div>
-        <div class="form-group" style="margin: 0;">
-            <label>Tanggal Selesai</label>
-            <input type="date" name="end_date" class="form-control" value="{{ end_date or '' }}">
-        </div>
-        <button type="submit" class="btn btn-gold">Filter Laporan</button>
-    </form>
-</div>
+    </div>
 
-<div class="table-container">
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Waktu Transaksi</th>
-                <th>Kode Reservasi</th>
-                <th>Tamu</th>
-                <th>Metode</th>
-                <th>Status</th>
-                <th>Nominal</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for l in laporan %}
-            <tr>
-                <td>{{ l.tanggal_bayar }}</td>
-                <td>{{ l.kode_reservasi }}</td>
-                <td>{{ l.nama_tamu }}</td>
-                <td>{{ l.metode_pembayaran|upper }}</td>
-                <td><span class="badge badge-success">{{ l.status_pembayaran|upper }}</span></td>
-                <td>Rp {{ "{:,.0f}".format(l.jumlah_bayar) }}</td>
-            </tr>
-            {% else %}
-            <tr><td colspan="6" style="text-align: center;">Tidak ada data transaksi.</td></tr>
-            {% endfor %}
-        </tbody>
-        <tfoot>
-            <tr style="background: #f8fafc; font-weight: bold;">
-                <td colspan="5" style="text-align: right;">Total Pendapatan:</td>
-                <td style="color: var(--gold-primary);">Rp {{ "{:,.0f}".format(total) }}</td>
-            </tr>
-        </tfoot>
-    </table>
+    <!-- FILTER TANGGAL -->
+    <div class="report-filter-card">
+
+        <div class="report-card-heading">
+            <div>
+                <h3>Filter Laporan</h3>
+                <p>Tentukan periode transaksi yang ingin ditampilkan.</p>
+            </div>
+            <span class="report-filter-icon">▤</span>
+        </div>
+
+        <form method="GET" class="report-filter-form">
+
+            <div class="report-form-group">
+                <label for="start_date">Tanggal Mulai</label>
+                <input
+                    type="date"
+                    id="start_date"
+                    name="start_date"
+                    class="form-control"
+                    value="{{ start_date or '' }}"
+                >
+            </div>
+
+            <div class="report-form-group">
+                <label for="end_date">Tanggal Selesai</label>
+                <input
+                    type="date"
+                    id="end_date"
+                    name="end_date"
+                    class="form-control"
+                    value="{{ end_date or '' }}"
+                >
+            </div>
+
+            <button type="submit" class="report-filter-btn">
+                <span>⌕</span> Filter Laporan
+            </button>
+
+        </form>
+    </div>
+
+    <!-- TABEL LAPORAN -->
+    <div class="report-table-card">
+
+        <div class="report-table-heading">
+            <div>
+                <h3>Riwayat Transaksi</h3>
+                <p>Daftar pembayaran berdasarkan periode yang dipilih.</p>
+            </div>
+
+            <span class="report-count">
+                {{ laporan|length }} Transaksi
+            </span>
+        </div>
+
+        <div class="report-table-wrapper">
+            <table class="report-table">
+
+                <thead>
+                    <tr>
+                        <th>Waktu Transaksi</th>
+                        <th>Kode Reservasi</th>
+                        <th>Tamu</th>
+                        <th>Metode</th>
+                        <th>Status</th>
+                        <th>Nominal</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for l in laporan %}
+                    <tr>
+                        <td>{{ l.tanggal_bayar }}</td>
+
+                        <td>
+                            <strong class="report-code">
+                                {{ l.kode_reservasi }}
+                            </strong>
+                        </td>
+
+                        <td>{{ l.nama_tamu }}</td>
+
+                        <td>
+                            <span class="report-method">
+                                {{ l.metode_pembayaran|upper }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="report-status">
+                                {{ l.status_pembayaran|upper }}
+                            </span>
+                        </td>
+
+                        <td class="report-amount">
+                            Rp {{ "{:,.0f}".format(l.jumlah_bayar) }}
+                        </td>
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="report-empty">
+                            <div class="report-empty-icon">▤</div>
+                            <strong>Tidak Ada Data Transaksi</strong>
+                            <p>Belum terdapat transaksi pada periode ini.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td colspan="5" class="report-total-label">
+                            Total Pendapatan
+                        </td>
+                        <td class="report-total-value">
+                            Rp {{ "{:,.0f}".format(total) }}
+                        </td>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

@@ -1,50 +1,124 @@
+
 {% extends 'base.html' %}
 {% block title %}Fasilitas Hotel{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Fasilitas Hotel</h1>
+<div class="facility-page">
 
-<div style="display: flex; gap: 20px;">
-    <div style="background: #fff; padding: 20px; border-radius: 8px; width: 350px; height: fit-content;">
-        <h3>Tambah Fasilitas</h3>
-        <form action="{{ url_for('fasilitas.tambah') }}" method="POST" style="margin-top: 15px;">
-            <div class="form-group">
-                <label>Nama Fasilitas</label>
-                <input type="text" name="nama_fasilitas" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label>Keterangan</label>
-                <input type="text" name="keterangan" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-gold" style="width: 100%;">Tambah</button>
-        </form>
+    <div class="facility-header">
+        <div>
+            <h1>Fasilitas Hotel</h1>
+            <p>Kelola daftar fasilitas yang tersedia di Hotel Grand.</p>
+        </div>
     </div>
 
-    <div class="table-container" style="flex: 1;">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Fasilitas</th>
-                    <th>Keterangan</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for f in fasilitas_list %}
-                <tr>
-                    <td><strong>{{ f.nama_fasilitas }}</strong></td>
-                    <td>{{ f.keterangan or '-' }}</td>
-                    <td>
-                        <form action="{{ url_for('fasilitas.hapus', id=f.id) }}" method="POST" onsubmit="return confirmDeletion();">
-                            <button class="btn btn-sm" style="background-color: #ef4444; color: #fff;">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
-                {% else %}
-                <tr><td colspan="3" style="text-align: center;">Belum ada fasilitas.</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="facility-summary">
+        <div class="facility-summary-card">
+            <div class="facility-summary-icon">✦</div>
+            <div>
+                <span>Total Fasilitas</span>
+                <h2>{{ fasilitas_list|length }}</h2>
+                <small>Fasilitas terdaftar</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="facility-content">
+
+        <div class="facility-form-card">
+            <div class="facility-card-heading">
+                <div class="facility-heading-icon">+</div>
+                <div>
+                    <h3>Tambah Fasilitas</h3>
+                    <p>Masukkan fasilitas baru hotel.</p>
+                </div>
+            </div>
+
+            <form action="{{ url_for('fasilitas.tambah') }}"
+                  method="POST"
+                  class="facility-form">
+
+                <div class="facility-form-group">
+                    <label>Nama Fasilitas</label>
+                    <input type="text"
+                           name="nama_fasilitas"
+                           class="form-control"
+                           placeholder="Contoh: Kolam Renang"
+                           required>
+                </div>
+
+                <div class="facility-form-group">
+                    <label>Keterangan</label>
+                    <textarea name="keterangan"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Masukkan keterangan fasilitas..."></textarea>
+                </div>
+
+                <button type="submit" class="facility-submit-btn">
+                    + Tambah Fasilitas
+                </button>
+            </form>
+        </div>
+
+        <div class="facility-table-card">
+            <div class="facility-table-heading">
+                <div>
+                    <h3>Daftar Fasilitas</h3>
+                    <p>Informasi fasilitas yang dimiliki hotel.</p>
+                </div>
+                <span class="facility-count">
+                    {{ fasilitas_list|length }} Data
+                </span>
+            </div>
+
+            <div class="facility-table-wrapper">
+                <table class="facility-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Nama Fasilitas</th>
+                            <th>Keterangan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for f in fasilitas_list %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+
+                            <td>
+                                <strong class="facility-name">
+                                    {{ f.nama_fasilitas }}
+                                </strong>
+                            </td>
+
+                            <td>{{ f.keterangan or '-' }}</td>
+
+                            <td>
+                                <form action="{{ url_for('fasilitas.hapus', id=f.id) }}"
+                                      method="POST"
+                                      onsubmit="return confirmDeletion();">
+                                    <button type="submit" class="facility-delete-btn">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="facility-empty">
+                                Belum ada fasilitas yang terdaftar.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </div>
 {% endblock %}
