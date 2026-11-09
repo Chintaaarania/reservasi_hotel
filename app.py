@@ -1,4 +1,5 @@
-from flask import Flask
+
+from flask import Flask, render_template
 from config import Config
 from database import db
 
@@ -7,6 +8,11 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
+
+    # Halaman utama / Landing Page
+    @app.route('/')
+    def landing():
+        return render_template('landing.html')
 
     # Register Blueprints
     from routes.auth import auth_bp

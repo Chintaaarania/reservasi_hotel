@@ -1,0 +1,714 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HotelGrand | Elegant Stay Experience</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #F5EFE6;
+            color: #44352C;
+        }
+
+        :root {
+            --brown: #4B3025;
+            --brown-light: #806047;
+            --cream: #F5EFE6;
+            --white: #FFFCF8;
+            --gold: #B18A61;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            height: 82px;
+            padding: 0 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 3px 15px rgba(75,48,37,0.06);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 27px;
+            font-weight: 700;
+            color: var(--brown);
+        }
+
+        .logo span {
+            color: var(--gold);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-menu a {
+            color: var(--brown);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: var(--gold);
+        }
+
+        .nav-menu .login-btn {
+            background: var(--brown);
+            color: white;
+            padding: 12px 22px;
+            border-radius: 5px;
+        }
+
+        .nav-menu .login-btn:hover {
+            background: #806047;
+            color: white;
+        }
+
+        /* HERO */
+
+        .hero {
+            min-height: 610px;
+            padding: 100px 8%;
+            display: flex;
+            align-items: center;
+            background:
+                linear-gradient(90deg,
+                rgba(35,22,16,0.85),
+                rgba(35,22,16,0.15)),
+                url("https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2000&q=85")
+                center/cover no-repeat;
+        }
+
+        .hero-content {
+            max-width: 620px;
+            color: white;
+        }
+
+        .hero-label {
+            color: #E7C9A8;
+            letter-spacing: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(42px, 5vw, 65px);
+            line-height: 1.15;
+            margin-bottom: 22px;
+        }
+
+        .hero p {
+            color: #F3E9DF;
+            font-size: 15px;
+            line-height: 1.9;
+            max-width: 520px;
+            margin-bottom: 32px;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            padding: 15px 27px;
+            background: #D9B995;
+            color: var(--brown);
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .hero-btn:hover {
+            background: white;
+            transform: translateY(-3px);
+        }
+
+        /* STATISTIK */
+
+        .stats {
+            width: 84%;
+            margin: -48px auto 0;
+            position: relative;
+            z-index: 2;
+            background: var(--white);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 12px 35px rgba(75,48,37,0.10);
+        }
+
+        .stat-item {
+            text-align: center;
+            border-right: 1px solid #E7DCCE;
+        }
+
+        .stat-item:last-child {
+            border-right: none;
+        }
+
+        .stat-item h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            color: var(--brown);
+            margin-bottom: 5px;
+        }
+
+        .stat-item p {
+            font-size: 12px;
+            color: #8A796B;
+        }
+
+        /* SECTION UMUM */
+
+        .section {
+            padding: 95px 8%;
+        }
+
+        .section-label {
+            color: var(--gold);
+            font-size: 11px;
+            letter-spacing: 3px;
+            font-weight: 700;
+            margin-bottom: 13px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--brown);
+            font-size: 38px;
+            margin-bottom: 18px;
+        }
+
+        .section-description {
+            color: #806F61;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        /* ABOUT */
+
+        .about {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 65px;
+            align-items: center;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .about-text p {
+            margin-bottom: 18px;
+        }
+
+        .about-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 13px 22px;
+            border: 1px solid var(--brown);
+            color: var(--brown);
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .about-link:hover {
+            background: var(--brown);
+            color: white;
+        }
+
+        /* FACILITIES */
+
+        .facilities-section {
+            background: #FFFCF8;
+            text-align: center;
+        }
+
+        .facilities-section .section-description {
+            max-width: 620px;
+            margin: 0 auto 40px;
+        }
+
+        .facility-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            text-align: left;
+        }
+
+        .facility-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(75,48,37,0.07);
+            transition: 0.3s;
+        }
+
+        .facility-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 12px 25px rgba(75,48,37,0.12);
+        }
+
+        .facility-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .facility-info {
+            padding: 23px;
+        }
+
+        .facility-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 21px;
+            color: var(--brown);
+            margin-bottom: 10px;
+        }
+
+        .facility-info p {
+            color: #806F61;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        /* KEUNGGULAN */
+
+        .advantages {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 35px;
+        }
+
+        .advantage-card {
+            padding: 30px 24px;
+            background: #F0E5D8;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .advantage-icon {
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .advantage-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 19px;
+            color: var(--brown);
+            margin-bottom: 10px;
+        }
+
+        .advantage-card p {
+            font-size: 13px;
+            color: #806F61;
+            line-height: 1.8;
+        }
+
+        /* CTA */
+
+        .cta {
+            margin: 0 8% 90px;
+            padding: 65px 30px;
+            text-align: center;
+            background:
+                linear-gradient(rgba(55,34,24,0.88), rgba(55,34,24,0.88)),
+                url("https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1600&q=80")
+                center/cover;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .cta h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 35px;
+            margin-bottom: 15px;
+        }
+
+        .cta p {
+            color: #E8D9C9;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: #35231B;
+            color: #E9DCCF;
+            padding: 45px 8% 25px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 35px;
+        }
+
+        .footer-brand h2 {
+            font-family: 'Playfair Display', serif;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .footer-brand p,
+        .footer-contact p {
+            font-size: 13px;
+            line-height: 1.9;
+            color: #C9B8A7;
+        }
+
+        .footer-contact h3 {
+            color: white;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .copyright {
+            text-align: center;
+            border-top: 1px solid #614A3B;
+            padding-top: 22px;
+            font-size: 12px;
+            color: #B9A595;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 768px) {
+            .navbar {
+                height: auto;
+                padding: 20px 5%;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .hero {
+                min-height: 520px;
+                padding: 70px 7%;
+            }
+
+            .stats {
+                width: 90%;
+                padding: 20px 10px;
+            }
+
+            .stat-item h2 {
+                font-size: 23px;
+            }
+
+            .stat-item p {
+                font-size: 10px;
+            }
+
+            .about,
+            .facility-grid,
+            .advantages {
+                grid-template-columns: 1fr;
+            }
+
+            .about {
+                gap: 30px;
+            }
+
+            .about-image img {
+                height: 280px;
+            }
+
+            .section {
+                padding: 65px 7%;
+            }
+
+            .section-title {
+                font-size: 30px;
+            }
+
+            .cta {
+                margin: 0 5% 60px;
+            }
+
+            .cta h2 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">Hotel<span>Grand.</span></div>
+
+        <div class="nav-menu">
+            <a href="#beranda">Beranda</a>
+            <a href="#tentang">Tentang Kami</a>
+            <a href="#fasilitas">Fasilitas</a>
+            <a href="#keunggulan">Keunggulan</a>
+            <a href="#kontak">Kontak</a>
+            <a href="{{ url_for('auth.login') }}" class="login-btn">
+                Login Admin
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" id="beranda">
+        <div class="hero-content">
+            <div class="hero-label">WELCOME TO HOTELGRAND</div>
+
+            <h1>Experience Comfort, Elegance & Luxury</h1>
+
+            <p>
+                Temukan pengalaman menginap yang lebih berkesan
+                bersama HotelGrand. Nikmati suasana yang nyaman,
+                fasilitas berkualitas, dan pelayanan yang
+                mengutamakan kepuasan setiap tamu.
+            </p>
+
+            <a href="#tentang" class="hero-btn">
+                Jelajahi HotelGrand →
+            </a>
+        </div>
+    </section>
+
+    <!-- STATISTIK -->
+    <section class="stats">
+        <div class="stat-item">
+            <h2>Comfort</h2>
+            <p>Kenyamanan Menginap</p>
+        </div>
+
+        <div class="stat-item">
+            <h2>Quality</h2>
+            <p>Pelayanan Berkualitas</p>
+        </div>
+
+        <div class="stat-item">
+            <h2>Luxury</h2>
+            <p>Pengalaman Berkesan</p>
+        </div>
+    </section>
+
+    <!-- TENTANG KAMI -->
+    <section class="section about" id="tentang">
+        <div class="about-image">
+            <img
+                src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=1000&q=85"
+                alt="Interior HotelGrand">
+        </div>
+
+        <div class="about-text">
+            <div class="section-label">ABOUT HOTELGRAND</div>
+
+            <h2 class="section-title">
+                Lebih dari Sekadar Tempat Menginap
+            </h2>
+
+            <p class="section-description">
+                HotelGrand hadir sebagai pilihan akomodasi
+                yang mengutamakan kenyamanan dan kualitas
+                pelayanan bagi setiap pengunjung.
+            </p>
+
+            <p class="section-description">
+                Dengan suasana yang hangat, fasilitas yang
+                mendukung, serta pelayanan yang ramah,
+                kami berkomitmen menciptakan pengalaman
+                menginap yang menyenangkan dan berkesan.
+            </p>
+
+            <a href="#fasilitas" class="about-link">
+                Lihat Fasilitas
+            </a>
+        </div>
+    </section>
+
+    <!-- FASILITAS -->
+    <section class="section facilities-section" id="fasilitas">
+        <div class="section-label">OUR FACILITIES</div>
+
+        <h2 class="section-title">Fasilitas HotelGrand</h2>
+
+        <p class="section-description">
+            Kami menyediakan berbagai fasilitas untuk
+            memberikan kenyamanan dan kemudahan selama
+            Anda menginap bersama HotelGrand.
+        </p>
+
+        <div class="facility-grid">
+
+            <div class="facility-card">
+                <img
+                    src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=80"
+                    alt="Kamar Hotel">
+
+                <div class="facility-info">
+                    <h3>Kamar Nyaman</h3>
+                    <p>
+                        Ruangan yang dirancang untuk memberikan
+                        suasana istirahat yang nyaman dan tenang.
+                    </p>
+                </div>
+            </div>
+
+            <div class="facility-card">
+                <img
+                    src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=900&q=80"
+                    alt="Kolam Renang">
+
+                <div class="facility-info">
+                    <h3>Area Relaksasi</h3>
+                    <p>
+                        Area bersantai untuk menikmati waktu
+                        luang dengan suasana yang menyenangkan.
+                    </p>
+                </div>
+            </div>
+
+            <div class="facility-card">
+                <img
+                    src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=80"
+                    alt="Restoran Hotel">
+
+                <div class="facility-info">
+                    <h3>Restoran</h3>
+                    <p>
+                        Area bersantap dengan suasana nyaman
+                        untuk melengkapi pengalaman menginap.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- KEUNGGULAN -->
+    <section class="section" id="keunggulan">
+        <div style="text-align:center;">
+            <div class="section-label">WHY CHOOSE US</div>
+            <h2 class="section-title">Mengapa HotelGrand?</h2>
+            <p class="section-description">
+                Kami percaya bahwa pengalaman menginap yang baik
+                dimulai dari kenyamanan dan pelayanan terbaik.
+            </p>
+        </div>
+
+        <div class="advantages">
+
+            <div class="advantage-card">
+                <div class="advantage-icon">✦</div>
+                <h3>Kenyamanan</h3>
+                <p>
+                    Menghadirkan suasana yang mendukung
+                    kenyamanan selama menginap.
+                </p>
+            </div>
+
+            <div class="advantage-card">
+                <div class="advantage-icon">♧</div>
+                <h3>Pelayanan Ramah</h3>
+                <p>
+                    Mengutamakan keramahan dan kepuasan
+                    dalam setiap pelayanan.
+                </p>
+            </div>
+
+            <div class="advantage-card">
+                <div class="advantage-icon">◇</div>
+                <h3>Kualitas</h3>
+                <p>
+                    Berkomitmen memberikan pengalaman
+                    menginap yang berkualitas.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <section class="cta">
+        <h2>Discover Your Comfort at HotelGrand</h2>
+
+        <p>
+            Jadikan setiap momen menginap lebih nyaman
+            dan berkesan bersama kami.
+        </p>
+
+        <a href="{{ url_for('auth.login') }}" class="hero-btn">
+            Login Admin
+        </a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="kontak">
+        <div class="footer-content">
+
+            <div class="footer-brand">
+                <h2>HotelGrand.</h2>
+                <p>
+                    Experience Comfort, Elegance & Luxury.
+                    <br>
+                    Memberikan pengalaman menginap yang berkesan.
+                </p>
+            </div>
+
+            <div class="footer-contact">
+                <h3>Informasi Kontak</h3>
+                <p>Alamat: Jl. Grand Luxury No.25, Kecamatan Kuta, Kabupaten Bandung, Bali 80361</p>
+                <p>Telepon: 081234567890</p>
+                <p>Email: reservasi.hotelgrand@gmail.com</p>
+            </div>
+
+        </div>
+
+        <div class="copyright">
+            © 2026 HotelGrand. All Rights Reserved.
+        </div>
+    </footer>
+
+</body>
+</html>

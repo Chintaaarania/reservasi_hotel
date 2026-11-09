@@ -1,125 +1,197 @@
 
 {% extends 'base.html' %}
 
-{% block title %}Dashboard - Hotel Management{% endblock %}
+{% block title %}Dashboard - HotelGrand{% endblock %}
 
 {% block content %}
 
-<div class="dashboard-container">
+<div class="hg-dashboard">
 
-    <!-- Header Dashboard -->
-    <div class="dashboard-heading">
+    <!-- HEADER -->
+    <div class="hg-dashboard-header">
         <div>
-            <p class="dashboard-subtitle">HOTEL MANAGEMENT SYSTEM</p>
-            <h1 class="page-title">Dashboard</h1>
-            <p class="dashboard-description">
-                Selamat datang di halaman utama pengelolaan hotel.
-                Pantau aktivitas dan informasi hotel melalui dashboard ini.
-            </p>
-        </div>
-        <div class="dashboard-date">
-            <span>Overview Operasional</span>
-            <strong>Hotel Management</strong>
-        </div>
-    </div>
-
-    <!-- Statistik -->
-    <div class="dashboard-stats">
-
-        <div class="dashboard-stat-card">
-            <div class="stat-icon room-icon">▦</div>
-            <div class="stat-info">
-                <p>Total Kamar</p>
-                <h2>{{ total_kamar }}</h2>
-                <span>Jumlah seluruh kamar</span>
-            </div>
-        </div>
-
-        <div class="dashboard-stat-card">
-            <div class="stat-icon occupied-icon">▣</div>
-            <div class="stat-info">
-                <p>Kamar Terisi</p>
-                <h2>{{ kamar_terisi }}</h2>
-                <span>Kamar sedang digunakan</span>
-            </div>
-        </div>
-
-        <div class="dashboard-stat-card">
-            <div class="stat-icon reservation-icon">▤</div>
-            <div class="stat-info">
-                <p>Reservasi Aktif</p>
-                <h2>{{ reservasi_aktif }}</h2>
-                <span>Reservasi berjalan</span>
-            </div>
-        </div>
-
-        <div class="dashboard-stat-card">
-            <div class="stat-icon guest-icon">♙</div>
-            <div class="stat-info">
-                <p>Total Tamu</p>
-                <h2>{{ total_tamu }}</h2>
-                <span>Data tamu terdaftar</span>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Informasi Kamar -->
-    <div class="dashboard-bottom">
-
-        <div class="dashboard-panel occupancy-panel">
-            <div class="panel-heading">
-                <div>
-                    <h3>Informasi Kamar</h3>
-                    <p>Ringkasan penggunaan kamar hotel</p>
-                </div>
-                <span class="panel-icon">⌂</span>
-            </div>
-
-            {% set persentase = ((kamar_terisi / total_kamar) * 100)|round|int if total_kamar > 0 else 0 %}
-
-            <div class="occupancy-content">
-                <div class="occupancy-number">
-                    <strong>{{ persentase }}%</strong>
-                    <span>Tingkat keterisian kamar</span>
-                </div>
-
-                <div class="occupancy-bar">
-                    <div class="occupancy-progress"
-                         style="width: {{ persentase }}%;">
-                    </div>
-                </div>
-
-                <div class="occupancy-detail">
-                    <div>
-                        <span class="status-dot occupied-dot"></span>
-                        Kamar Terisi
-                        <strong>{{ kamar_terisi }}</strong>
-                    </div>
-                    <div>
-                        <span class="status-dot available-dot"></span>
-                        Kamar Belum Terisi
-                        <strong>{{ total_kamar - kamar_terisi }}</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="dashboard-panel welcome-panel">
-            <div class="welcome-decoration">✦</div>
-            <p class="welcome-label">WELCOME TO</p>
-            <h3>Hotel Management</h3>
+            <span class="hg-eyebrow">HOTELGRAND MANAGEMENT SYSTEM</span>
+            <h1>Dashboard</h1>
             <p>
-                Kelola informasi kamar, data tamu, reservasi,
-                pembayaran, dan layanan hotel dengan lebih mudah
-                melalui satu sistem yang terintegrasi.
+                Selamat datang kembali, {{ session.get('nama_lengkap', 'Admin') }}.
+                Berikut ringkasan operasional HotelGrand.
             </p>
-            <div class="welcome-footer">
-                <span>Hospitality Management</span>
+        </div>
+
+        <div class="hg-header-label">
+            <span class="hg-header-symbol">✦</span>
+            <div>
+                <strong>HotelGrand</strong>
+                <small>Hospitality Management</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATISTIK -->
+    <div class="hg-stat-grid">
+
+        <div class="hg-stat-card hg-stat-room">
+            <div class="hg-stat-top">
+                <span>Total Kamar</span>
+                <div class="hg-stat-icon">▦</div>
+            </div>
+            <h2>{{ total_kamar }}</h2>
+            <p>Jumlah seluruh kamar hotel</p>
+            <div class="hg-stat-bottom">
+                <span>ROOM OVERVIEW</span>
+                <span>01</span>
+            </div>
+        </div>
+
+        <div class="hg-stat-card hg-stat-occupied">
+            <div class="hg-stat-top">
+                <span>Kamar Terisi</span>
+                <div class="hg-stat-icon">▣</div>
+            </div>
+            <h2>{{ kamar_terisi }}</h2>
+            <p>Kamar yang sedang digunakan</p>
+            <div class="hg-stat-bottom">
+                <span>OCCUPIED ROOMS</span>
+                <span>02</span>
+            </div>
+        </div>
+
+        <div class="hg-stat-card hg-stat-reservation">
+            <div class="hg-stat-top">
+                <span>Reservasi Aktif</span>
+                <div class="hg-stat-icon">▤</div>
+            </div>
+            <h2>{{ reservasi_aktif }}</h2>
+            <p>Reservasi yang sedang berjalan</p>
+            <div class="hg-stat-bottom">
+                <span>ACTIVE BOOKING</span>
+                <span>03</span>
+            </div>
+        </div>
+
+        <div class="hg-stat-card hg-stat-guest">
+            <div class="hg-stat-top">
+                <span>Total Tamu</span>
+                <div class="hg-stat-icon">♙</div>
+            </div>
+            <h2>{{ total_tamu }}</h2>
+            <p>Jumlah tamu yang terdaftar</p>
+            <div class="hg-stat-bottom">
+                <span>GUEST OVERVIEW</span>
+                <span>04</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- INFORMASI OPERASIONAL -->
+    {% set persentase = ((kamar_terisi / total_kamar) * 100)|round|int if total_kamar > 0 else 0 %}
+
+    <div class="hg-main-grid">
+
+        <div class="hg-panel hg-occupancy">
+            <div class="hg-panel-heading">
+                <div>
+                    <span class="hg-panel-label">ROOM STATISTICS</span>
+                    <h3>Informasi Kamar</h3>
+                    <p>Ringkasan penggunaan kamar HotelGrand</p>
+                </div>
+                <div class="hg-panel-icon">⌂</div>
+            </div>
+
+            <div class="hg-occupancy-number">
+                <div>
+                    <strong>{{ persentase }}<small>%</small></strong>
+                    <p>Tingkat keterisian kamar</p>
+                </div>
+                <span class="hg-occupancy-caption">ROOM OCCUPANCY</span>
+            </div>
+
+            <div class="hg-progress-track">
+                <div class="hg-progress-fill"
+                     style="width: {{ persentase }}%;">
+                </div>
+            </div>
+
+            <div class="hg-room-details">
+                <div class="hg-room-detail">
+                    <div>
+                        <span class="hg-dot hg-dot-occupied"></span>
+                        <span>Kamar Terisi</span>
+                    </div>
+                    <strong>{{ kamar_terisi }}</strong>
+                </div>
+
+                <div class="hg-room-detail">
+                    <div>
+                        <span class="hg-dot hg-dot-available"></span>
+                        <span>Kamar Belum Terisi</span>
+                    </div>
+                    <strong>{{ total_kamar - kamar_terisi }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="hg-panel hg-welcome">
+            <div class="hg-welcome-decoration">✦</div>
+            <span class="hg-panel-label">WELCOME TO HOTELGRAND</span>
+            <h3>Manage Your Hotel<br>With Ease.</h3>
+            <p>
+                Satu sistem untuk membantu mengelola operasional hotel,
+                mulai dari reservasi, data kamar, informasi tamu,
+                hingga transaksi pembayaran.
+            </p>
+
+            <div class="hg-welcome-line"></div>
+
+            <div class="hg-welcome-bottom">
+                <span>Comfort · Quality · Hospitality</span>
                 <span>✧</span>
             </div>
         </div>
 
+    </div>
+
+    <!-- AKSES CEPAT -->
+    <div class="hg-quick-section">
+        <div class="hg-quick-heading">
+            <div>
+                <span class="hg-panel-label">QUICK ACCESS</span>
+                <h3>Akses Menu Cepat</h3>
+                <p>Pilih menu untuk mengelola operasional hotel.</p>
+            </div>
+        </div>
+
+        <div class="hg-quick-grid">
+
+            <a href="{{ url_for('reservasi.index') }}" class="hg-quick-card">
+                <span class="hg-quick-icon">▤</span>
+                <span class="hg-quick-text">
+                    <strong>Reservasi</strong>
+                    <small>Kelola pemesanan kamar</small>
+                </span>
+                <span class="hg-quick-arrow">→</span>
+            </a>
+
+            <a href="{{ url_for('kamar.index') }}" class="hg-quick-card">
+                <span class="hg-quick-icon">▦</span>
+                <span class="hg-quick-text">
+                    <strong>Data Kamar</strong>
+                    <small>Kelola informasi kamar</small>
+                </span>
+                <span class="hg-quick-arrow">→</span>
+            </a>
+
+            <a href="{{ url_for('tamu.index') }}" class="hg-quick-card">
+                <span class="hg-quick-icon">♙</span>
+                <span class="hg-quick-text">
+                    <strong>Data Tamu</strong>
+                    <small>Kelola informasi tamu</small>
+                </span>
+                <span class="hg-quick-arrow">→</span>
+            </a>
+
+        </div>
     </div>
 
 </div>

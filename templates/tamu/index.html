@@ -4,96 +4,115 @@
 {% block title %}Data Tamu{% endblock %}
 
 {% block content %}
-<div class="guest-page">
+
+<div class="hg-guest-page">
 
     <!-- HEADER -->
-    <div class="guest-header">
+    <div class="hg-guest-header">
         <div>
-            <p class="guest-subtitle">HOTEL GRAND MANAGEMENT</p>
+            <span class="hg-guest-eyebrow">HOTEL GRAND MANAGEMENT</span>
             <h1 class="page-title">Data Tamu</h1>
-            <p class="guest-description">
-                Kelola informasi dan data tamu yang menginap di hotel.
+            <p class="hg-guest-description">
+                Kelola informasi identitas dan kontak seluruh tamu Hotel Grand.
             </p>
         </div>
 
-        <a href="{{ url_for('tamu.tambah') }}" class="guest-add-btn">
+        <a href="{{ url_for('tamu.tambah') }}" class="hg-guest-add-btn">
             <span>＋</span> Tambah Tamu
         </a>
     </div>
 
-    <!-- INFORMATION CARD -->
-    <div class="guest-info-card">
-        <div class="guest-info-icon">♙</div>
+    <!-- SUMMARY -->
+    <div class="hg-guest-summary">
+        <div class="hg-guest-summary-icon">♙</div>
 
-        <div>
-            <span>Manajemen Hotel</span>
-            <h3>Informasi Data Tamu</h3>
-            <p>Daftar informasi tamu Hotel Grand yang telah terdaftar.</p>
+        <div class="hg-guest-summary-info">
+            <span class="hg-guest-summary-label">TOTAL TAMU TERDAFTAR</span>
+            <div class="hg-guest-summary-bottom">
+                <strong>{{ tamu_list|length }}</strong>
+                <span>Orang</span>
+            </div>
+            <p>Jumlah seluruh data tamu yang tersimpan dalam sistem.</p>
         </div>
+
+        <div class="hg-guest-summary-decoration">HOTEL GRAND</div>
     </div>
 
-    <!-- GUEST TABLE -->
-    <div class="guest-table-card">
+    <!-- TABLE CARD -->
+    <div class="hg-guest-table-card">
 
-        <div class="guest-table-heading">
+        <div class="hg-guest-table-heading">
             <div>
-                <h3>Daftar Tamu</h3>
-                <p>Informasi identitas dan kontak tamu hotel.</p>
+                <h3>Daftar Tamu Hotel</h3>
+                <p>Informasi identitas dan kontak tamu yang telah terdaftar.</p>
             </div>
 
-            <span class="guest-count">
-                {{ tamu_list|length }} Tamu Terdaftar
+            <span class="hg-guest-count">
+                {{ tamu_list|length }} Tamu
             </span>
         </div>
 
-        <div class="guest-table-wrapper">
-            <table class="guest-table">
+        <div class="hg-guest-table-wrapper">
+            <table class="hg-guest-table">
 
                 <thead>
                     <tr>
-                        <th>No.</th>
+                        <th class="hg-guest-number">No.</th>
                         <th>NIK / Paspor</th>
                         <th>Nama Lengkap</th>
                         <th>Email</th>
                         <th>No. Telepon</th>
-                        <th>Aksi</th>
+                        <th class="hg-guest-action-heading">Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {% for t in tamu_list %}
                     <tr>
-                        <td>{{ loop.index }}</td>
+                        <td class="hg-guest-number">
+                            {{ loop.index }}
+                        </td>
 
                         <td>
-                            <strong class="guest-identity">
+                            <span class="hg-guest-identity">
                                 {{ t.nik_paspor }}
-                            </strong>
+                            </span>
                         </td>
-
-                        <td class="guest-name">
-                            {{ t.nama_lengkap }}
-                        </td>
-
-                        <td>{{ t.email or '-' }}</td>
-
-                        <td>{{ t.nomor_telepon }}</td>
 
                         <td>
-                            <div class="guest-action-group">
+                            <div class="hg-guest-name-wrap">
+                                <div class="hg-guest-avatar">
+                                    {{ t.nama_lengkap[:1]|upper }}
+                                </div>
+                                <strong class="hg-guest-name">
+                                    {{ t.nama_lengkap }}
+                                </strong>
+                            </div>
+                        </td>
+
+                        <td class="hg-guest-muted">
+                            {{ t.email or '-' }}
+                        </td>
+
+                        <td class="hg-guest-phone">
+                            {{ t.nomor_telepon }}
+                        </td>
+
+                        <td>
+                            <div class="hg-guest-actions">
 
                                 <a href="{{ url_for('tamu.edit', id=t.id) }}"
-                                   class="guest-edit-btn">
-                                    Edit
+                                   class="hg-guest-edit-btn">
+                                    <span>✎</span> Edit
                                 </a>
 
                                 <form action="{{ url_for('tamu.hapus', id=t.id) }}"
                                       method="POST"
-                                      class="guest-delete-form"
+                                      class="hg-guest-delete-form"
                                       onsubmit="return confirmDeletion();">
 
-                                    <button type="submit" class="guest-delete-btn">
-                                        Hapus
+                                    <button type="submit" class="hg-guest-delete-btn">
+                                        <span>⌫</span> Hapus
                                     </button>
 
                                 </form>
@@ -104,10 +123,15 @@
 
                     {% else %}
                     <tr>
-                        <td colspan="6" class="guest-empty">
-                            <div class="guest-empty-icon">♙</div>
-                            <strong>Belum Ada Data Tamu</strong>
-                            <p>Silakan tambahkan data tamu terlebih dahulu.</p>
+                        <td colspan="6">
+                            <div class="hg-guest-empty">
+                                <div class="hg-guest-empty-icon">♙</div>
+                                <strong>Belum Ada Data Tamu</strong>
+                                <p>Data tamu yang ditambahkan akan ditampilkan di sini.</p>
+                                <a href="{{ url_for('tamu.tambah') }}">
+                                    ＋ Tambahkan Tamu Pertama
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -115,7 +139,14 @@
 
             </table>
         </div>
+
+        <div class="hg-guest-table-footer">
+            <span>Hotel Grand</span>
+            <span>Data tamu tersimpan dalam sistem reservasi hotel.</span>
+        </div>
+
     </div>
 
 </div>
+
 {% endblock %}

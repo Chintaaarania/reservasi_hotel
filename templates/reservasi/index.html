@@ -1,46 +1,103 @@
 
 {% extends 'base.html' %}
-{% block title %}Daftar Reservasi{% endblock %}
+
+{% block title %}Daftar Reservasi - HotelGrand{% endblock %}
 
 {% block content %}
 
-<div class="reservation-page">
+{% set stats = namespace(total=0, booking=0, checkin=0, checkout=0) %}
 
-    <div class="reservation-header">
+{% for r in reservasi_list %}
+    {% set stats.total = stats.total + 1 %}
+    {% if r.status_reservasi == 'booking' %}
+        {% set stats.booking = stats.booking + 1 %}
+    {% elif r.status_reservasi == 'checkin' %}
+        {% set stats.checkin = stats.checkin + 1 %}
+    {% elif r.status_reservasi == 'checkout' %}
+        {% set stats.checkout = stats.checkout + 1 %}
+    {% endif %}
+{% endfor %}
+
+<div class="hg-reservation-page">
+
+    <!-- HEADER -->
+    <div class="hg-reservation-header">
         <div>
-            <p class="reservation-subtitle">HOTEL GRAND MANAGEMENT</p>
-            <h1 class="page-title">Daftar Reservasi</h1>
-            <p class="reservation-description">
-                Kelola dan pantau seluruh data reservasi tamu hotel.
+            <span class="hg-reservation-eyebrow">HOTELGRAND MANAGEMENT SYSTEM</span>
+            <h1>Daftar Reservasi</h1>
+            <p>
+                Kelola pemesanan kamar dan pantau aktivitas reservasi
+                tamu HotelGrand dengan mudah.
             </p>
         </div>
 
-        <a href="{{ url_for('reservasi.buat') }}" class="reservation-add-btn">
-            + Reservasi Baru
+        <a href="{{ url_for('reservasi.buat') }}" class="hg-reservation-add">
+            <span>＋</span>
+            Reservasi Baru
         </a>
     </div>
 
-    <div class="reservation-summary">
-        <div class="reservation-summary-icon">▤</div>
-        <div>
-            <span>Data Reservasi</span>
-            <h3>Daftar Pemesanan Kamar</h3>
-        </div>
-    </div>
+    <!-- RINGKASAN -->
+    <div class="hg-reservation-summary">
 
-    <div class="reservation-table-card">
-        <div class="reservation-table-heading">
+        <div class="hg-reservation-summary-card">
+            <div class="hg-reservation-summary-icon icon-total">▤</div>
             <div>
-                <h3>Semua Reservasi</h3>
-                <p>Informasi pemesanan dan status reservasi tamu</p>
+                <span>Total Reservasi</span>
+                <strong>{{ stats.total }}</strong>
+                <small>Seluruh data pemesanan</small>
             </div>
         </div>
 
-        <div class="reservation-table-wrapper">
-            <table class="reservation-table">
+        <div class="hg-reservation-summary-card">
+            <div class="hg-reservation-summary-icon icon-booking">◷</div>
+            <div>
+                <span>Booking</span>
+                <strong>{{ stats.booking }}</strong>
+                <small>Menunggu proses check-in</small>
+            </div>
+        </div>
+
+        <div class="hg-reservation-summary-card">
+            <div class="hg-reservation-summary-icon icon-checkin">✓</div>
+            <div>
+                <span>Check-In</span>
+                <strong>{{ stats.checkin }}</strong>
+                <small>Tamu sedang menginap</small>
+            </div>
+        </div>
+
+        <div class="hg-reservation-summary-card">
+            <div class="hg-reservation-summary-icon icon-checkout">⌂</div>
+            <div>
+                <span>Check-Out</span>
+                <strong>{{ stats.checkout }}</strong>
+                <small>Reservasi telah selesai</small>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TABEL RESERVASI -->
+    <div class="hg-reservation-table-card">
+
+        <div class="hg-reservation-table-heading">
+            <div>
+                <span class="hg-reservation-section-label">RESERVATION MANAGEMENT</span>
+                <h3>Semua Reservasi</h3>
+                <p>Informasi pemesanan kamar dan status reservasi tamu.</p>
+            </div>
+
+            <div class="hg-reservation-total-label">
+                {{ stats.total }} Data
+            </div>
+        </div>
+
+        <div class="hg-reservation-table-wrapper">
+            <table class="hg-reservation-table">
                 <thead>
                     <tr>
-                        <th>Kode</th>
+                        <th>Kode Reservasi</th>
                         <th>Nama Tamu</th>
                         <th>Kamar</th>
                         <th>Check-In</th>
@@ -55,49 +112,83 @@
                     {% for r in reservasi_list %}
                     <tr>
                         <td>
-                            <strong class="reservation-code">
+                            <span class="hg-reservation-code">
                                 {{ r.kode_reservasi }}
-                            </strong>
+                            </span>
                         </td>
 
-                        <td>{{ r.nama_tamu }}</td>
-                        <td>{{ r.nomor_kamar }}</td>
+                        <td>
+                            <span class="hg-reservation-guest">
+                                {{ r.nama_tamu }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="hg-reservation-room">
+                                {{ r.nomor_kamar }}
+                            </span>
+                        </td>
+
                         <td>{{ r.tanggal_checkin }}</td>
                         <td>{{ r.tanggal_checkout }}</td>
 
-                        <td class="reservation-price">
-                            Rp {{ "{:,.0f}".format(r.total_harga) }}
+                        <td>
+                            <strong class="hg-reservation-price">
+                                Rp {{ "{:,.0f}".format(r.total_harga) }}
+                            </strong>
                         </td>
 
                         <td>
                             {% if r.status_reservasi == 'booking' %}
-                                <span class="reservation-status status-booking">Booking</span>
+                                <span class="hg-reservation-badge badge-booking">
+                                    <span></span> Booking
+                                </span>
                             {% elif r.status_reservasi == 'checkin' %}
-                                <span class="reservation-status status-checkin">Check-In</span>
+                                <span class="hg-reservation-badge badge-checkin">
+                                    <span></span> Check-In
+                                </span>
                             {% elif r.status_reservasi == 'checkout' %}
-                                <span class="reservation-status status-checkout">Check-Out</span>
+                                <span class="hg-reservation-badge badge-checkout">
+                                    <span></span> Check-Out
+                                </span>
                             {% else %}
-                                <span class="reservation-status status-cancelled">Batal</span>
+                                <span class="hg-reservation-badge badge-cancelled">
+                                    <span></span> Batal
+                                </span>
                             {% endif %}
                         </td>
 
                         <td>
                             <a href="{{ url_for('reservasi.detail', id=r.id) }}"
-                               class="reservation-detail-btn">
-                                Detail
+                               class="hg-reservation-detail">
+                                Lihat Detail <span>→</span>
                             </a>
                         </td>
                     </tr>
+
                     {% else %}
                     <tr>
-                        <td colspan="8" class="reservation-empty">
-                            Belum ada data reservasi.
+                        <td colspan="8">
+                            <div class="hg-reservation-empty">
+                                <div class="hg-empty-icon">▤</div>
+                                <strong>Belum Ada Reservasi</strong>
+                                <p>Data pemesanan kamar belum tersedia.</p>
+                                <a href="{{ url_for('reservasi.buat') }}">
+                                    + Buat Reservasi Baru
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+
+        <div class="hg-reservation-table-footer">
+            <span>HotelGrand · Reservation Management</span>
+            <span>Total {{ stats.total }} reservasi</span>
+        </div>
+
     </div>
 
 </div>

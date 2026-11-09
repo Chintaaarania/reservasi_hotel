@@ -1,48 +1,121 @@
 
 {% extends 'base.html' %}
-{% block title %}Proses Check-In & Check-Out{% endblock %}
+
+{% block title %}Check-In & Check-Out - HotelGrand{% endblock %}
 
 {% block content %}
 
-<div class="check-page">
+{% set stats = namespace(booking=0, checkin=0) %}
 
-    <div class="check-page-header">
+{% for r in reservasi_list %}
+    {% if r.status_reservasi == 'booking' %}
+        {% set stats.booking = stats.booking + 1 %}
+    {% elif r.status_reservasi == 'checkin' %}
+        {% set stats.checkin = stats.checkin + 1 %}
+    {% endif %}
+{% endfor %}
+
+<div class="hg-check-page">
+
+    <!-- HEADER -->
+    <div class="hg-check-header">
         <div>
-            <p class="check-subtitle">HOTEL GRAND MANAGEMENT</p>
-            <h1 class="page-title">Check-In & Check-Out</h1>
-            <p class="check-description">
-                Kelola proses kedatangan dan kepulangan tamu hotel.
+            <span class="hg-check-eyebrow">HOTELGRAND MANAGEMENT SYSTEM</span>
+            <h1>Check-In & Check-Out</h1>
+            <p>
+                Kelola proses kedatangan dan kepulangan tamu
+                untuk memastikan operasional hotel berjalan lancar.
             </p>
         </div>
-    </div>
 
-    <div class="check-info-card">
-        <div class="check-info-icon">⌂</div>
-        <div>
-            <span>Operasional Hotel</span>
-            <h3>Daftar Tamu Aktif</h3>
+        <div class="hg-check-header-label">
+            <span>✦</span>
+            <div>
+                <strong>Front Office</strong>
+                <small>Guest Operations</small>
+            </div>
         </div>
     </div>
 
-    <div class="check-table-card">
+    <!-- INFORMASI OPERASIONAL -->
+    <div class="hg-check-intro">
+        <div class="hg-check-intro-icon">⌂</div>
+        <div>
+            <span>OPERASIONAL HOTEL</span>
+            <h3>Aktivitas Tamu Hotel</h3>
+            <p>Pantau status kedatangan dan kepulangan tamu secara langsung.</p>
+        </div>
+    </div>
 
-        <div class="check-table-heading">
-            <div>
-                <h3>Daftar Check-In & Check-Out</h3>
-                <p>Pantau reservasi yang siap diproses dan tamu yang sedang menginap.</p>
+    <!-- RINGKASAN -->
+    <div class="hg-check-stats">
+
+        <div class="hg-check-stat-card">
+            <div class="hg-check-stat-top">
+                <div>
+                    <span>MENUNGGU KEDATANGAN</span>
+                    <h3>Siap Check-In</h3>
+                </div>
+                <div class="hg-check-stat-icon hg-icon-booking">◷</div>
+            </div>
+
+            <strong class="hg-check-stat-number">{{ stats.booking }}</strong>
+            <p>Reservasi yang siap diproses untuk kedatangan tamu.</p>
+
+            <div class="hg-check-stat-footer">
+                <span class="hg-check-dot dot-booking"></span>
+                Menunggu Check-In
             </div>
         </div>
 
-        <div class="check-table-wrapper">
-            <table class="check-table">
+        <div class="hg-check-stat-card">
+            <div class="hg-check-stat-top">
+                <div>
+                    <span>TAMU SEDANG MENGINAP</span>
+                    <h3>In-House</h3>
+                </div>
+                <div class="hg-check-stat-icon hg-icon-staying">✓</div>
+            </div>
+
+            <strong class="hg-check-stat-number">{{ stats.checkin }}</strong>
+            <p>Tamu yang sedang menggunakan kamar hotel.</p>
+
+            <div class="hg-check-stat-footer">
+                <span class="hg-check-dot dot-staying"></span>
+                Sedang Menginap
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TABEL OPERASIONAL -->
+    <div class="hg-check-table-card">
+
+        <div class="hg-check-table-heading">
+            <div>
+                <span class="hg-check-section-label">GUEST OPERATION</span>
+                <h3>Daftar Check-In & Check-Out</h3>
+                <p>
+                    Daftar reservasi yang membutuhkan proses kedatangan
+                    maupun kepulangan tamu.
+                </p>
+            </div>
+
+            <div class="hg-check-total">
+                {{ stats.booking + stats.checkin }} Aktivitas
+            </div>
+        </div>
+
+        <div class="hg-check-table-wrapper">
+            <table class="hg-check-table">
                 <thead>
                     <tr>
-                        <th>Kode</th>
-                        <th>Tamu</th>
+                        <th>Kode Reservasi</th>
+                        <th>Nama Tamu</th>
                         <th>Kamar</th>
                         <th>Check-In</th>
                         <th>Check-Out</th>
-                        <th>Status</th>
+                        <th>Status Tamu</th>
                         <th>Aksi Operasional</th>
                     </tr>
                 </thead>
@@ -51,23 +124,35 @@
                     {% for r in reservasi_list %}
                     <tr>
                         <td>
-                            <strong class="check-code">
+                            <span class="hg-check-code">
                                 {{ r.kode_reservasi }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong class="hg-check-guest">
+                                {{ r.nama_tamu }}
                             </strong>
                         </td>
 
-                        <td>{{ r.nama_tamu }}</td>
-                        <td>{{ r.nomor_kamar }}</td>
+                        <td>
+                            <span class="hg-check-room">
+                                {{ r.nomor_kamar }}
+                            </span>
+                        </td>
+
                         <td>{{ r.tanggal_checkin }}</td>
                         <td>{{ r.tanggal_checkout }}</td>
 
                         <td>
                             {% if r.status_reservasi == 'booking' %}
-                                <span class="check-status check-ready">
+                                <span class="hg-check-badge hg-badge-ready">
+                                    <span></span>
                                     Siap Check-In
                                 </span>
                             {% elif r.status_reservasi == 'checkin' %}
-                                <span class="check-status check-staying">
+                                <span class="hg-check-badge hg-badge-staying">
+                                    <span></span>
                                     In-House
                                 </span>
                             {% endif %}
@@ -77,8 +162,10 @@
                             {% if r.status_reservasi == 'booking' %}
                                 <form action="{{ url_for('checkin_checkout.checkin', id=r.id) }}"
                                       method="POST"
-                                      class="check-action-form">
-                                    <button type="submit" class="check-action-btn checkin-btn">
+                                      class="hg-check-action-form">
+                                    <button type="submit"
+                                            class="hg-check-action-btn hg-btn-checkin">
+                                        <span>✓</span>
                                         Proses Check-In
                                     </button>
                                 </form>
@@ -86,8 +173,10 @@
                             {% elif r.status_reservasi == 'checkin' %}
                                 <form action="{{ url_for('checkin_checkout.checkout', id=r.id) }}"
                                       method="POST"
-                                      class="check-action-form">
-                                    <button type="submit" class="check-action-btn checkout-btn">
+                                      class="hg-check-action-form">
+                                    <button type="submit"
+                                            class="hg-check-action-btn hg-btn-checkout">
+                                        <span>↗</span>
                                         Proses Check-Out
                                     </button>
                                 </form>
@@ -97,17 +186,27 @@
 
                     {% else %}
                     <tr>
-                        <td colspan="7" class="check-empty">
-                            <div class="check-empty-icon">⌂</div>
-                            <strong>Tidak Ada Reservasi Aktif</strong>
-                            <p>Belum ada tamu yang perlu diproses saat ini.</p>
+                        <td colspan="7">
+                            <div class="hg-check-empty">
+                                <div class="hg-check-empty-icon">⌂</div>
+                                <strong>Tidak Ada Reservasi Aktif</strong>
+                                <p>
+                                    Belum ada tamu yang perlu diproses
+                                    untuk Check-In atau Check-Out.
+                                </p>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
-
             </table>
         </div>
+
+        <div class="hg-check-table-footer">
+            <span>HotelGrand · Front Office Management</span>
+            <span>{{ stats.booking + stats.checkin }} aktivitas operasional</span>
+        </div>
+
     </div>
 
 </div>

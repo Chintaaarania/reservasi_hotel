@@ -1,112 +1,185 @@
 
 {% extends 'base.html' %}
+
 {% block title %}Data Kamar{% endblock %}
 
 {% block content %}
-<div class="room-data-page">
 
-    <div class="room-data-header">
+<div class="hg-room-page">
+
+    <!-- HEADER -->
+    <div class="hg-room-header">
         <div>
-            <h1>Data Kamar</h1>
-            <p>Kelola informasi kamar dan status ketersediaan kamar hotel.</p>
+            <span class="hg-room-eyebrow">HOTEL GRAND MANAGEMENT</span>
+            <h1 class="page-title">Data Kamar</h1>
+            <p class="hg-room-description">
+                Kelola informasi kamar, tipe kamar, harga, dan ketersediaan hotel.
+            </p>
         </div>
 
-        <a href="{{ url_for('kamar.tambah') }}" class="room-data-add-btn">
-            + Tambah Kamar
+        <a href="{{ url_for('kamar.tambah') }}" class="hg-room-add-btn">
+            <span>＋</span> Tambah Kamar
         </a>
     </div>
 
-    <div class="room-data-summary">
-        <div class="room-data-summary-card">
-            <span class="summary-label">Total Data Kamar</span>
+    <!-- SUMMARY CARDS -->
+    <div class="hg-room-summary">
+
+        <div class="hg-room-summary-card">
+            <div class="hg-room-card-top">
+                <div class="hg-room-icon hg-room-icon-total">▦</div>
+                <span class="hg-room-card-caption">SELURUH KAMAR</span>
+            </div>
+
             <h2>{{ kamar_list|length }}</h2>
-            <span class="summary-note">Jumlah kamar terdaftar</span>
+            <p>Total kamar yang terdaftar dalam sistem</p>
         </div>
 
-        <div class="room-data-summary-card">
-            <span class="summary-label">Kamar Tersedia</span>
+        <div class="hg-room-summary-card">
+            <div class="hg-room-card-top">
+                <div class="hg-room-icon hg-room-icon-available">✓</div>
+                <span class="hg-room-card-caption">KAMAR TERSEDIA</span>
+            </div>
+
             <h2>{{ kamar_list|selectattr('status', 'equalto', 'tersedia')|list|length }}</h2>
-            <span class="summary-note">Siap digunakan tamu</span>
+            <p>Kamar siap digunakan oleh tamu</p>
         </div>
 
-        <div class="room-data-summary-card">
-            <span class="summary-label">Kamar Terisi</span>
+        <div class="hg-room-summary-card">
+            <div class="hg-room-card-top">
+                <div class="hg-room-icon hg-room-icon-occupied">♙</div>
+                <span class="hg-room-card-caption">KAMAR TERISI</span>
+            </div>
+
             <h2>{{ kamar_list|selectattr('status', 'equalto', 'terisi')|list|length }}</h2>
-            <span class="summary-note">Sedang digunakan tamu</span>
+            <p>Kamar sedang digunakan oleh tamu</p>
         </div>
+
     </div>
 
-    <div class="room-data-table-card">
-        <div class="room-data-table-heading">
-            <div>
+    <!-- ROOM TABLE -->
+    <div class="hg-room-table-card">
+
+        <div class="hg-room-table-heading">
+            <div class="hg-room-heading-icon">▦</div>
+
+            <div class="hg-room-heading-text">
                 <h3>Daftar Kamar Hotel</h3>
-                <p>Informasi nomor, tipe, harga, dan status kamar.</p>
+                <p>Informasi lengkap kamar yang tersedia di Hotel Grand.</p>
             </div>
+
+            <span class="hg-room-total-badge">
+                {{ kamar_list|length }} Kamar
+            </span>
         </div>
 
-        <div class="room-data-table-wrapper">
-            <table class="room-data-table">
+        <div class="hg-room-table-wrapper">
+            <table class="hg-room-table">
+
                 <thead>
                     <tr>
-                        <th>No. Kamar</th>
+                        <th>No.</th>
+                        <th>Nomor Kamar</th>
                         <th>Tipe Kamar</th>
                         <th>Harga / Malam</th>
                         <th>Status</th>
-                        <th>Aksi</th>
+                        <th class="hg-room-action-heading">Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {% for k in kamar_list %}
                     <tr>
-                        <td>
-                            <strong class="room-number">{{ k.nomor_kamar }}</strong>
+                        <td class="hg-room-row-number">
+                            {{ loop.index }}
                         </td>
 
-                        <td>{{ k.nama_tipe }}</td>
+                        <td>
+                            <div class="hg-room-number-wrap">
+                                <div class="hg-room-number-icon">▣</div>
+                                <strong>{{ k.nomor_kamar }}</strong>
+                            </div>
+                        </td>
 
-                        <td class="room-price">
-                            Rp {{ "{:,.0f}".format(k.harga_per_malam) }}
+                        <td>
+                            <span class="hg-room-type">
+                                {{ k.nama_tipe }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong class="hg-room-price">
+                                Rp {{ "{:,.0f}".format(k.harga_per_malam) }}
+                            </strong>
+                            <span class="hg-room-price-note">per malam</span>
                         </td>
 
                         <td>
                             {% if k.status == 'tersedia' %}
-                                <span class="room-status room-status-available">Tersedia</span>
+                                <span class="hg-room-status hg-room-status-available">
+                                    <span></span> Tersedia
+                                </span>
                             {% elif k.status == 'terisi' %}
-                                <span class="room-status room-status-occupied">Terisi</span>
+                                <span class="hg-room-status hg-room-status-occupied">
+                                    <span></span> Terisi
+                                </span>
                             {% else %}
-                                <span class="room-status room-status-other">{{ k.status|capitalize }}</span>
+                                <span class="hg-room-status hg-room-status-other">
+                                    <span></span> {{ k.status|capitalize }}
+                                </span>
                             {% endif %}
                         </td>
 
                         <td>
-                            <div class="room-data-actions">
-                                <a href="{{ url_for('kamar.edit', id=k.id) }}" class="room-edit-btn">
-                                    Edit
+                            <div class="hg-room-actions">
+
+                                <a href="{{ url_for('kamar.edit', id=k.id) }}"
+                                   class="hg-room-edit-btn">
+                                    ✎ Edit
                                 </a>
 
                                 <form action="{{ url_for('kamar.hapus', id=k.id) }}"
                                       method="POST"
+                                      class="hg-room-delete-form"
                                       onsubmit="return confirmDeletion();">
-                                    <button type="submit" class="room-delete-btn">
-                                        Hapus
+
+                                    <button type="submit" class="hg-room-delete-btn">
+                                        ⌫ Hapus
                                     </button>
+
                                 </form>
+
                             </div>
                         </td>
                     </tr>
 
                     {% else %}
                     <tr>
-                        <td colspan="5" class="room-data-empty">
-                            Belum ada data kamar.
+                        <td colspan="6">
+                            <div class="hg-room-empty">
+                                <div class="hg-room-empty-icon">▦</div>
+                                <strong>Belum Ada Data Kamar</strong>
+                                <p>Silakan tambahkan kamar untuk mulai mengelola data kamar hotel.</p>
+
+                                <a href="{{ url_for('kamar.tambah') }}">
+                                    ＋ Tambahkan Kamar
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
+
             </table>
         </div>
+
+        <div class="hg-room-table-footer">
+            <span>HOTEL GRAND</span>
+            <span>Informasi kamar dan ketersediaan hotel</span>
+        </div>
+
     </div>
 
 </div>
+
 {% endblock %}
