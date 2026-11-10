@@ -34,10 +34,14 @@ def tambah():
                 filename = f"{int(time.time())}_{filename}"
                 
                 # Lokasi penyimpanan mengacu ke folder static/uploads
-                upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
-                os.makedirs(upload_folder, exist_ok=True)
-                file.save(os.path.join(upload_folder, filename))
-                gambar_name = filename
+                try:
+                    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+                    os.makedirs(upload_folder, exist_ok=True)
+                    file.save(os.path.join(upload_folder, filename))
+                    gambar_name = filename
+                except Exception as e:
+                    current_app.logger.warning(f'Upload dilewati di environment serverless: {e}')
+                    gambar_name = 'default_kamar.jpg' 
 
         db.session.execute(
             db.text("""
@@ -74,20 +78,23 @@ def edit(id):
                 filename = secure_filename(file.filename)
                 filename = f"{int(time.time())}_{filename}"
                 
-                upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
-                os.makedirs(upload_folder, exist_ok=True)
-                file.save(os.path.join(upload_folder, filename))
-                
-                # Hapus gambar lama jika ada dan bukan default
-                if tipe.gambar and tipe.gambar != 'default_kamar.jpg':
-                    old_path = os.path.join(upload_folder, tipe.gambar)
-                    if os.path.exists(old_path):
-                        try:
-                            os.remove(old_path)
-                        except Exception:
-                            pass
-                            
-                gambar_name = filename
+                try:
+                    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+                    os.makedirs(upload_folder, exist_ok=True)
+                    file.save(os.path.join(upload_folder, filename))
+                    
+                    # Hapus gambar lama jika ada dan bukan default
+                    if tipe.gambar and tipe.gambar != 'default_kamar.jpg':
+                        old_path = os.path.join(upload_folder, tipe.gambar)
+                        if os.path.exists(old_path):
+                            try:
+                                os.remove(old_path)
+                            except Exception:
+                                pass
+                                
+                    gambar_name = filename
+                except Exception as e:
+                    current_app.logger.warning(f'Upload dilewati di environment serverless: {e}')
 
         db.session.execute(
             db.text("""

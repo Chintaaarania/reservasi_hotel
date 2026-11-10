@@ -6,6 +6,7 @@ venv/
 env/
 ENV/
 .venv/
+*.zip
 
 # Environment Variables
 .env

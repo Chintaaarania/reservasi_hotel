@@ -10,34 +10,31 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # SECRET_KEY wajib untuk session/login
+    # Secret Key wajib untuk Flask Session
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'reservasi-hotel-secret-key-123')
 
-    # Inisialisasi Firebase yang aman dari crash
+    # Inisialisasi Firebase dengan proteksi error parsing
     cred_json = os.environ.get('FIREBASE_CREDENTIALS')
     db_url = os.environ.get('FIREBASE_DATABASE_URL')
 
     if cred_json and not firebase_admin._apps:
         try:
-            # Mengatasi kendala formatting JSON di Vercel Environment Variables
+            # Jika string di Vercel terbungkus kutip ganda/tunggal ekstra
             if isinstance(cred_json, str):
-                # Jika string diawali/diakhiri tanda kutip ekstra
-                cred_json_clean = cred_json.strip("'\"")
-                cred_dict = json.loads(cred_json_clean, strict=False)
+                cred_json_str = cred_json.strip("'\"")
+                # Mengubah escaped backslash \\n menjadi \n sesungguhnya jika ada
+                cred_json_str = cred_json_str.replace("\\n", "\n")
+                cred_dict = json.loads(cred_json_str, strict=False)
             else:
                 cred_dict = cred_json
 
-            # Perbaiki format private key
-            if "private_key" in cred_dict and isinstance(cred_dict["private_key"], str):
-                cred_dict["private_key"] = cred_dict["private_key"].replace("\\n", "\n")
-            
             cred = credentials.Certificate(cred_dict)
             firebase_admin.initialize_app(cred, {
                 'databaseURL': db_url
             })
-            print("Firebase Admin SDK successfully initialized!")
+            print("Firebase initialized successfully!")
         except Exception as e:
-            print(f"Error initializing Firebase: {e}")
+            print(f"Warning: Firebase init skipped or failed: {e}")
 
     db.init_app(app)
 
