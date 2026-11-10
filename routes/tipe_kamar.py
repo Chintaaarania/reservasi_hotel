@@ -85,6 +85,95 @@ def edit(id):
     tipe = firebase_db.reference(f'tipe_kamar/{id}').get() or {}
 
     if request.method == 'POST':
+        # Default awal pakai gambar lama
+        gambar_name = tipe.get('gambar', 'default_kamar.jpg')
+
+        # 1. Prioritaskan URL gambar dari input teks jika diisi
+        gambar_url_input = request.form.get('gambar_url')
+        if gambar_url_input and gambar_url_input.strip() != '':
+            gambar_name = gambar_url_input.strip()
+
+        # 2. Cek jika mengunggah file fisik lokal
+        elif 'gambar' in request.files:
+            file = request.files['gambar']
+            if file and file.filename != '' and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filename = f"{int(time.time())}_{filename}"
+                try:
+                    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+                    os.makedirs(upload_folder, exist_ok=True)
+                    file.save(os.path.join(upload_folder, filename))
+                    gambar_name = filename
+                except Exception as e:
+                    current_app.logger.warning(f'Upload dilewati di serverless: {e}')
+                    # Pada Vercel, jika upload file fisik ditolak serverless, simpan nama file
+                    gambar_name = filename
+
+        # Update data ke Firebase
+        firebase_db.reference(f'tipe_kamar/{id}').update({
+            'nama_tipe': request.form.get('nama_tipe'),
+            'harga_per_malam': request.form.get('harga_per_malam'),
+            'kapasitas': request.form.get('kapasitas'),
+            'deskripsi': request.form.get('deskripsi'),
+            'gambar': gambar_name
+        })
+
+        flash('Tipe kamar berhasil diperbarui!', 'success')
+        return redirect(url_for('tipe_kamar.index'))
+
+    return render_template('tipe_kamar/form.html', action='Edit', tipe=tipe)
+
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+
+    tipe = firebase_db.reference(f'tipe_kamar/{id}').get() or {}
+
+    if request.method == 'POST':
+        # 1. Pertahankan gambar lama sebagai default awal
+        gambar_name = tipe.get('gambar', 'default_kamar.jpg')
+
+        # 2. Cek jika user memasukkan URL gambar langsung melalui form
+        if request.form.get('gambar_url'):
+            gambar_name = request.form.get('gambar_url')
+
+        # 3. Cek jika user mengunggah file fisik
+        elif 'gambar' in request.files:
+            file = request.files['gambar']
+            if file and file.filename != '' and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filename = f"{int(time.time())}_{filename}"
+                try:
+                    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+                    os.makedirs(upload_folder, exist_ok=True)
+                    file.save(os.path.join(upload_folder, filename))
+                    gambar_name = filename
+                except Exception as e:
+                    current_app.logger.warning(f'Simpan file lokal dilewati di Vercel Serverless: {e}')
+                    # Di serverless, jika file tidak bisa disimpan ke disk, 
+                    # kita tetap bisa menyimpan nama filename-nya atau URL-nya
+                    gambar_name = filename
+
+        # 4. Update data di Firebase Realtime Database
+        update_data = {
+            'nama_tipe': request.form.get('nama_tipe'),
+            'harga_per_malam': request.form.get('harga_per_malam'),
+            'kapasitas': request.form.get('kapasitas'),
+            'deskripsi': request.form.get('deskripsi'),
+            'gambar': gambar_name
+        }
+
+        firebase_db.reference(f'tipe_kamar/{id}').update(update_data)
+
+        flash('Tipe kamar berhasil diperbarui!', 'success')
+        return redirect(url_for('tipe_kamar.index'))
+
+    return render_template('tipe_kamar/form.html', action='Edit', tipe=tipe)
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+
+    tipe = firebase_db.reference(f'tipe_kamar/{id}').get() or {}
+
+    if request.method == 'POST':
         gambar_name = tipe.get('gambar', 'default_kamar.jpg')
 
         if 'gambar' in request.files:

@@ -41,11 +41,12 @@
 
             <div class="room-image">
                 <!-- PERUBAHAN: Mengambil gambar dari uploads/[t.gambar] dengan fallback ke default-room.jpg -->
-                <img
-                    src="{{ url_for('static', filename='uploads/' ~ (t.gambar if t.gambar else 'default_kamar.jpg')) }}"
-                    alt="Foto {{ t.nama_tipe }}"
-                    onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/kamar/default-room.jpg') }}';"
-                >
+                <!-- KODE BARU (Mendukung URL Internet & File Unggahan Local) -->
+<img
+    src="{{ t.gambar if (t.gambar and t.gambar.startswith('http')) else url_for('static', filename='uploads/' ~ (t.gambar if t.gambar else 'default_kamar.jpg')) }}"
+    alt="Foto {{ t.nama_tipe }}"
+    onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800';"
+>
 
                 <span class="room-image-label">{{ t.nama_tipe }}</span>
             </div>
