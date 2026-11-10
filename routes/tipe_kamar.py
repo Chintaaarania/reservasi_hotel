@@ -1,8 +1,6 @@
 import base64
 import os
-import time
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
-from werkzeug.utils import secure_filename
 from firebase_admin import db as firebase_db
 
 tipe_kamar_bp = Blueprint('tipe_kamar', __name__)
@@ -46,26 +44,15 @@ def tambah():
         return redirect(url_for('auth.login'))
 
     if request.method == 'POST':
-        gambar_name = 'default_kamar.jpg'
+        gambar_name = 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800'
         
-        # 1. Cek jika pengguna memasukkan URL Gambar Direct
         gambar_url_input = request.form.get('gambar_url')
+        gambar_base64_input = request.form.get('gambar_base64')
+
         if gambar_url_input and gambar_url_input.strip() != '':
             gambar_name = gambar_url_input.strip()
-            
-        # 2. Jika tidak ada URL, cek jika pengguna mengunggah berkas lokal
-        elif 'gambar' in request.files:
-            file = request.files['gambar']
-            if file and file.filename != '' and allowed_file(file.filename):
-                try:
-                    file_bytes = file.read()
-                    mime_type = file.mimetype or 'image/jpeg'
-                    base64_encoded = base64.b64encode(file_bytes).decode('utf-8')
-                    # Mengubah file menjadi string Base64 yang dapat dibaca HTML & disimpan di Firebase
-                    gambar_name = f"data:{mime_type};base64,{base64_encoded}"
-                except Exception as e:
-                    current_app.logger.warning(f'Error encoding image to Base64: {e}')
-                    gambar_name = 'default_kamar.jpg'
+        elif gambar_base64_input and gambar_base64_input.strip() != '':
+            gambar_name = gambar_base64_input.strip()
 
         ref = firebase_db.reference('tipe_kamar')
         new_ref = ref.push()
@@ -88,67 +75,50 @@ def edit(id):
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
 
-    tipe = firebase_db.reference(f'tipe_kamar/{id}').get() or {}
+    # Ambil data dari Firebase
+    ref = firebase_db.reference('tipe_kamar')
+    all_tipe = ref.get()
+    
+    tipe = None
+    target_key = id
+
+    if isinstance(all_tipe, dict):
+        if id in all_tipe:
+            tipe = all_tipe[id]
+        else:
+            for k, v in all_tipe.items():
+                if isinstance(v, dict) and str(v.get('id')) == str(id):
+                    tipe = v
+                    target_key = k
+                    break
+    elif isinstance(all_tipe, list):
+        for idx, item in enumerate(all_tipe):
+            if isinstance(item, dict) and str(item.get('id', idx)) == str(id):
+                tipe = item
+                target_key = str(idx)
+                break
 
     if request.method == 'POST':
-        gambar_name = tipe.get('gambar', 'default_kamar.jpg')
+        gambar_name = tipe.get('gambar') if tipe else 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800'
 
-        # 1. Cek URL Gambar Direct
         gambar_url_input = request.form.get('gambar_url')
+        gambar_base64_input = request.form.get('gambar_base64')
+
         if gambar_url_input and gambar_url_input.strip() != '':
             gambar_name = gambar_url_input.strip()
+        elif gambar_base64_input and gambar_base64_input.strip() != '':
+            gambar_name = gambar_base64_input.strip()
 
-        # 2. Cek Base64 yang sudah dikompresi dari browser
-        elif request.form.get('gambar_base64') and request.form.get('gambar_base64').strip() != '':
-            gambar_name = request.form.get('gambar_base64').strip()
-
-        firebase_db.reference(f'tipe_kamar/{id}').update({
+        update_payload = {
             'nama_tipe': request.form.get('nama_tipe'),
             'harga_per_malam': request.form.get('harga_per_malam'),
             'kapasitas': request.form.get('kapasitas'),
             'deskripsi': request.form.get('deskripsi'),
             'gambar': gambar_name
-        })
+        }
 
-        flash('Tipe kamar berhasil diperbarui!', 'success')
-        return redirect(url_for('tipe_kamar.index'))
-
-    return render_template('tipe_kamar/form.html', action='Edit', tipe=tipe)
-
-    if 'user_id' not in session:
-        return redirect(url_for('auth.login'))
-
-    tipe = firebase_db.reference(f'tipe_kamar/{id}').get() or {}
-
-    if request.method == 'POST':
-        # Default awal menggunakan gambar lama
-        gambar_name = tipe.get('gambar', 'default_kamar.jpg')
-
-        # 1. Prioritaskan URL Gambar jika diisi
-        gambar_url_input = request.form.get('gambar_url')
-        if gambar_url_input and gambar_url_input.strip() != '':
-            gambar_name = gambar_url_input.strip()
-
-        # 2. Jika user mengunggah berkas lokal baru
-        elif 'gambar' in request.files:
-            file = request.files['gambar']
-            if file and file.filename != '' and allowed_file(file.filename):
-                try:
-                    file_bytes = file.read()
-                    mime_type = file.mimetype or 'image/jpeg'
-                    base64_encoded = base64.b64encode(file_bytes).decode('utf-8')
-                    # Mengubah file ke format Base64 aman untuk Vercel Serverless
-                    gambar_name = f"data:{mime_type};base64,{base64_encoded}"
-                except Exception as e:
-                    current_app.logger.warning(f'Error encoding image to Base64: {e}')
-
-        firebase_db.reference(f'tipe_kamar/{id}').update({
-            'nama_tipe': request.form.get('nama_tipe'),
-            'harga_per_malam': request.form.get('harga_per_malam'),
-            'kapasitas': request.form.get('kapasitas'),
-            'deskripsi': request.form.get('deskripsi'),
-            'gambar': gambar_name
-        })
+        # Update node Firebase secara langsung
+        firebase_db.reference(f'tipe_kamar/{target_key}').update(update_payload)
 
         flash('Tipe kamar berhasil diperbarui!', 'success')
         return redirect(url_for('tipe_kamar.index'))

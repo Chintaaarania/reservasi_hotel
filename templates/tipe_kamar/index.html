@@ -40,13 +40,20 @@
         <div class="room-card">
 
             <div class="room-image">
-                <!-- PERUBAHAN: Mengambil gambar dari uploads/[t.gambar] dengan fallback ke default-room.jpg -->
-                <!-- KODE BARU (Mendukung URL Internet & File Unggahan Local) -->
-<img
-    src="{{ t.gambar if (t.gambar and t.gambar.startswith('http')) else url_for('static', filename='uploads/' ~ (t.gambar if t.gambar else 'default_kamar.jpg')) }}"
-    alt="Foto {{ t.nama_tipe }}"
-    onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800';"
->
+                <!-- Penanganan penentuan atribut SRC gambar yang presisi -->
+                {% if t.gambar and (t.gambar.startswith('http') or t.gambar.startswith('data:image')) %}
+                    {% set img_src = t.gambar %}
+                {% elif t.gambar %}
+                    {% set img_src = url_for('static', filename='uploads/' ~ t.gambar) %}
+                {% else %}
+                    {% set img_src = 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800' %}
+                {% endif %}
+
+                <img
+                    src="{{ img_src }}"
+                    alt="Foto {{ t.nama_tipe }}"
+                    style="width: 100%; height: 200px; object-fit: cover;"
+                >
 
                 <span class="room-image-label">{{ t.nama_tipe }}</span>
             </div>
@@ -82,7 +89,7 @@
                         <form
                             action="{{ url_for('tipe_kamar.hapus', id=t.id) }}"
                             method="POST"
-                            onsubmit="return confirmDeletion();"
+                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus tipe kamar ini?');"
                         >
                             <button type="submit" class="room-delete-btn">
                                 Hapus
