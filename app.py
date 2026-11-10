@@ -1,3 +1,7 @@
+import json
+import os
+import firebase_admin
+from firebase_admin import credentials, db as firebase_db
 from flask import Flask, render_template
 from config import Config
 from database import db
@@ -6,6 +10,29 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    # 1. Wajib set SECRET_KEY untuk Flask session/login
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'reservasi-hotel-secret-key-123')
+
+    # 2. Inisialisasi Firebase Admin SDK secara aman untuk Vercel
+    cred_json = os.environ.get('FIREBASE_CREDENTIALS')
+    db_url = os.environ.get('FIREBASE_DATABASE_URL')
+
+    if cred_json and not firebase_admin._apps:
+        try:
+            cred_dict = json.loads(cred_json, strict=False)
+            # Memperbaiki karakter newline \n dari Environment Variable Vercel
+            if "private_key" in cred_dict:
+                cred_dict["private_key"] = cred_dict["private_key"].replace("\\n", "\n")
+            
+            cred = credentials.Certificate(cred_dict)
+            firebase_admin.initialize_app(cred, {
+                'databaseURL': db_url
+            })
+            print("Firebase Admin SDK successfully initialized!")
+        except Exception as e:
+            print(f"Firebase initialization error: {e}")
+
+    # 3. Inisialisasi Database lokal/SQLAlchemy (jika masih dipakai)
     db.init_app(app)
 
     # Halaman utama / Landing Page
@@ -39,12 +66,6 @@ def create_app():
     app.register_blueprint(pembayaran_bp, url_prefix='/pembayaran')
     app.register_blueprint(laporan_bp, url_prefix='/laporan')
     app.register_blueprint(pengaturan_bp, url_prefix='/pengaturan')
-
-    with app.app_context():
-        try:
-            db.create_all()
-        except Exception as e:
-            print(f"Skipping db.create_all on serverless: {e}")
 
     return app
 
