@@ -91,6 +91,36 @@ def edit(id):
     tipe = firebase_db.reference(f'tipe_kamar/{id}').get() or {}
 
     if request.method == 'POST':
+        gambar_name = tipe.get('gambar', 'default_kamar.jpg')
+
+        # 1. Cek URL Gambar Direct
+        gambar_url_input = request.form.get('gambar_url')
+        if gambar_url_input and gambar_url_input.strip() != '':
+            gambar_name = gambar_url_input.strip()
+
+        # 2. Cek Base64 yang sudah dikompresi dari browser
+        elif request.form.get('gambar_base64') and request.form.get('gambar_base64').strip() != '':
+            gambar_name = request.form.get('gambar_base64').strip()
+
+        firebase_db.reference(f'tipe_kamar/{id}').update({
+            'nama_tipe': request.form.get('nama_tipe'),
+            'harga_per_malam': request.form.get('harga_per_malam'),
+            'kapasitas': request.form.get('kapasitas'),
+            'deskripsi': request.form.get('deskripsi'),
+            'gambar': gambar_name
+        })
+
+        flash('Tipe kamar berhasil diperbarui!', 'success')
+        return redirect(url_for('tipe_kamar.index'))
+
+    return render_template('tipe_kamar/form.html', action='Edit', tipe=tipe)
+
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+
+    tipe = firebase_db.reference(f'tipe_kamar/{id}').get() or {}
+
+    if request.method == 'POST':
         # Default awal menggunakan gambar lama
         gambar_name = tipe.get('gambar', 'default_kamar.jpg')
 
