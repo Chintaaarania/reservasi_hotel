@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template
 from config import Config
 from database import db
@@ -42,7 +41,10 @@ def create_app():
     app.register_blueprint(pengaturan_bp, url_prefix='/pengaturan')
 
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+        except Exception as e:
+            print(f"Skipping db.create_all on serverless: {e}")
 
     return app
 
