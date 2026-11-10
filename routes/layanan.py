@@ -27,7 +27,19 @@ def index():
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
 
-    layanan_list = get_clean_layanan()
+    layanan_raw = get_clean_layanan()
+    layanan_list = []
+
+    for l in layanan_raw:
+        # Konversi harga ke float secara aman agar Jinja template tidak crash
+        raw_harga = l.get('harga', 0)
+        try:
+            l['harga'] = float(raw_harga)
+        except (ValueError, TypeError):
+            l['harga'] = 0.0
+
+        layanan_list.append(l)
+
     layanan_list.sort(key=lambda x: str(x.get('id', '')), reverse=True)
     return render_template('layanan/index.html', layanan_list=layanan_list)
 
@@ -36,12 +48,20 @@ def tambah():
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
 
+    nama_layanan = request.form.get('nama_layanan')
+    raw_harga = request.form.get('harga')
+
+    try:
+        harga = float(raw_harga) if raw_harga else 0.0
+    except (ValueError, TypeError):
+        harga = 0.0
+
     ref = firebase_db.reference('layanan')
     new_ref = ref.push()
     new_ref.set({
         'id': new_ref.key,
-        'nama_layanan': request.form.get('nama_layanan'),
-        'harga': request.form.get('harga')
+        'nama_layanan': nama_layanan,
+        'harga': harga
     })
 
     flash('Layanan tambahan berhasil ditambahkan!', 'success')
@@ -52,6 +72,23 @@ def hapus(id):
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
 
-    firebase_db.reference(f'layanan/{id}').delete()
+    # Cari dan hapus node spesifik
+    ref = firebase_db.reference('layanan')
+    all_layanan = ref.get()
+    target_key = id
+
+    if isinstance(all_layanan, dict):
+        if id not in all_layanan:
+            for k, v in all_layanan.items():
+                if isinstance(v, dict) and str(v.get('id')) == str(id):
+                    target_key = k
+                    break
+    elif isinstance(all_layanan, list):
+        for idx, item in enumerate(all_layanan):
+            if isinstance(item, dict) and str(item.get('id', idx)) == str(id):
+                target_key = str(idx)
+                break
+
+    firebase_db.reference(f'layanan/{target_key}').delete()
     flash('Layanan berhasil dihapus!', 'warning')
     return redirect(url_for('layanan.index'))
