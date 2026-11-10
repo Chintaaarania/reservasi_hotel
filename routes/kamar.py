@@ -34,9 +34,17 @@ def index():
     for k in kamar_raw:
         t_info = tipe_raw.get(str(k.get('tipe_kamar_id')), {})
         k['nama_tipe'] = t_info.get('nama_tipe', '-')
-        k['harga_per_malam'] = t_info.get('harga_per_malam', 0)
+        
+        # Konversi harga ke float secara aman
+        raw_harga = t_info.get('harga_per_malam', 0)
+        try:
+            k['harga_per_malam'] = float(raw_harga)
+        except (ValueError, TypeError):
+            k['harga_per_malam'] = 0.0
+
         kamar_list.append(k)
 
+    # Urutkan berdasarkan nomor kamar secara aman
     kamar_list.sort(key=lambda x: str(x.get('nomor_kamar', '')))
     return render_template('kamar/index.html', kamar_list=kamar_list)
 
@@ -72,10 +80,32 @@ def edit(id):
         return redirect(url_for('auth.login'))
 
     tipe_list = get_clean_data('tipe_kamar')
-    kamar = firebase_db.reference(f'kamar/{id}').get()
+    
+    # Ambil data kamar spesifik dari Firebase
+    ref = firebase_db.reference('kamar')
+    all_kamar = ref.get()
+    
+    kamar = None
+    target_key = id
+
+    if isinstance(all_kamar, dict):
+        if id in all_kamar:
+            kamar = all_kamar[id]
+        else:
+            for k, v in all_kamar.items():
+                if isinstance(v, dict) and str(v.get('id')) == str(id):
+                    kamar = v
+                    target_key = k
+                    break
+    elif isinstance(all_kamar, list):
+        for idx, item in enumerate(all_kamar):
+            if isinstance(item, dict) and str(item.get('id', idx)) == str(id):
+                kamar = item
+                target_key = str(idx)
+                break
 
     if request.method == 'POST':
-        firebase_db.reference(f'kamar/{id}').update({
+        firebase_db.reference(f'kamar/{target_key}').update({
             'nomor_kamar': request.form.get('nomor_kamar'),
             'tipe_kamar_id': request.form.get('tipe_kamar_id'),
             'status': request.form.get('status')
