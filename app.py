@@ -10,18 +10,25 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # 1. Wajib set SECRET_KEY untuk Flask session/login
+    # SECRET_KEY wajib untuk session/login
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'reservasi-hotel-secret-key-123')
 
-    # 2. Inisialisasi Firebase Admin SDK secara aman untuk Vercel
+    # Inisialisasi Firebase yang aman dari crash
     cred_json = os.environ.get('FIREBASE_CREDENTIALS')
     db_url = os.environ.get('FIREBASE_DATABASE_URL')
 
     if cred_json and not firebase_admin._apps:
         try:
-            cred_dict = json.loads(cred_json, strict=False)
-            # Memperbaiki karakter newline \n dari Environment Variable Vercel
-            if "private_key" in cred_dict:
+            # Mengatasi kendala formatting JSON di Vercel Environment Variables
+            if isinstance(cred_json, str):
+                # Jika string diawali/diakhiri tanda kutip ekstra
+                cred_json_clean = cred_json.strip("'\"")
+                cred_dict = json.loads(cred_json_clean, strict=False)
+            else:
+                cred_dict = cred_json
+
+            # Perbaiki format private key
+            if "private_key" in cred_dict and isinstance(cred_dict["private_key"], str):
                 cred_dict["private_key"] = cred_dict["private_key"].replace("\\n", "\n")
             
             cred = credentials.Certificate(cred_dict)
@@ -30,12 +37,10 @@ def create_app():
             })
             print("Firebase Admin SDK successfully initialized!")
         except Exception as e:
-            print(f"Firebase initialization error: {e}")
+            print(f"Error initializing Firebase: {e}")
 
-    # 3. Inisialisasi Database lokal/SQLAlchemy (jika masih dipakai)
     db.init_app(app)
 
-    # Halaman utama / Landing Page
     @app.route('/')
     def landing():
         return render_template('landing.html')
