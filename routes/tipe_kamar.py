@@ -2,7 +2,7 @@ import os
 import time
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 from werkzeug.utils import secure_filename
-from database import db
+from firebase_admin import db as firebase_db
 
 tipe_kamar_bp = Blueprint('tipe_kamar', __name__)
 
@@ -11,12 +11,32 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def get_clean_tipe():
+    raw_data = firebase_db.reference('tipe_kamar').get()
+    items = []
+    if not raw_data:
+        return items
+    if isinstance(raw_data, dict):
+        for key, value in raw_data.items():
+            if isinstance(value, dict):
+                val_copy = value.copy()
+                val_copy['id'] = val_copy.get('id', key)
+                items.append(val_copy)
+    elif isinstance(raw_data, list):
+        for idx, item in enumerate(raw_data):
+            if isinstance(item, dict):
+                item_copy = item.copy()
+                item_copy['id'] = item_copy.get('id', idx)
+                items.append(item_copy)
+    return items
+
 @tipe_kamar_bp.route('/')
 def index():
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
 
-    tipe_list = db.session.execute(db.text("SELECT * FROM tipe_kamar ORDER BY id DESC")).fetchall()
+    tipe_list = get_clean_tipe()
+    tipe_list.sort(key=lambda x: str(x.get('id', '')), reverse=True)
     return render_template('tipe_kamar/index.html', tipe_list=tipe_list)
 
 @tipe_kamar_bp.route('/tambah', methods=['GET', 'POST'])
@@ -32,8 +52,6 @@ def tambah():
             if file and file.filename != '' and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 filename = f"{int(time.time())}_{filename}"
-                
-                # Lokasi penyimpanan mengacu ke folder static/uploads
                 try:
                     upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
                     os.makedirs(upload_folder, exist_ok=True)
@@ -43,94 +61,63 @@ def tambah():
                     current_app.logger.warning(f'Upload dilewati di environment serverless: {e}')
                     gambar_name = 'default_kamar.jpg' 
 
-        db.session.execute(
-            db.text("""
-                INSERT INTO tipe_kamar (nama_tipe, harga_per_malam, kapasitas, deskripsi, gambar)
-                VALUES (:nama, :harga, :kapasitas, :deskripsi, :gambar)
-            """),
-            {
-                'nama': request.form.get('nama_tipe'),
-                'harga': request.form.get('harga_per_malam'),
-                'kapasitas': request.form.get('kapasitas'),
-                'deskripsi': request.form.get('deskripsi'),
-                'gambar': gambar_name
-            }
-        )
-        db.session.commit()
+        ref = firebase_db.reference('tipe_kamar')
+        new_ref = ref.push()
+        new_ref.set({
+            'id': new_ref.key,
+            'nama_tipe': request.form.get('nama_tipe'),
+            'harga_per_malam': request.form.get('harga_per_malam'),
+            'kapasitas': request.form.get('kapasitas'),
+            'deskripsi': request.form.get('deskripsi'),
+            'gambar': gambar_name
+        })
+
         flash('Tipe kamar berhasil ditambahkan!', 'success')
         return redirect(url_for('tipe_kamar.index'))
 
     return render_template('tipe_kamar/form.html', action='Tambah')
 
-@tipe_kamar_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
+@tipe_kamar_bp.route('/edit/<id>', methods=['GET', 'POST'])
 def edit(id):
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
 
-    tipe = db.session.execute(db.text("SELECT * FROM tipe_kamar WHERE id = :id"), {'id': id}).fetchone()
+    tipe = firebase_db.reference(f'tipe_kamar/{id}').get() or {}
 
     if request.method == 'POST':
-        gambar_name = tipe.gambar
+        gambar_name = tipe.get('gambar', 'default_kamar.jpg')
 
         if 'gambar' in request.files:
             file = request.files['gambar']
             if file and file.filename != '' and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 filename = f"{int(time.time())}_{filename}"
-                
                 try:
                     upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
                     os.makedirs(upload_folder, exist_ok=True)
                     file.save(os.path.join(upload_folder, filename))
-                    
-                    # Hapus gambar lama jika ada dan bukan default
-                    if tipe.gambar and tipe.gambar != 'default_kamar.jpg':
-                        old_path = os.path.join(upload_folder, tipe.gambar)
-                        if os.path.exists(old_path):
-                            try:
-                                os.remove(old_path)
-                            except Exception:
-                                pass
-                                
                     gambar_name = filename
                 except Exception as e:
-                    current_app.logger.warning(f'Upload dilewati di environment serverless: {e}')
+                    current_app.logger.warning(f'Upload dilewati di serverless: {e}')
 
-        db.session.execute(
-            db.text("""
-                UPDATE tipe_kamar SET nama_tipe=:nama, harga_per_malam=:harga, 
-                kapasitas=:kapasitas, deskripsi=:deskripsi, gambar=:gambar WHERE id=:id
-            """),
-            {
-                'nama': request.form.get('nama_tipe'),
-                'harga': request.form.get('harga_per_malam'),
-                'kapasitas': request.form.get('kapasitas'),
-                'deskripsi': request.form.get('deskripsi'),
-                'gambar': gambar_name,
-                'id': id
-            }
-        )
-        db.session.commit()
+        firebase_db.reference(f'tipe_kamar/{id}').update({
+            'nama_tipe': request.form.get('nama_tipe'),
+            'harga_per_malam': request.form.get('harga_per_malam'),
+            'kapasitas': request.form.get('kapasitas'),
+            'deskripsi': request.form.get('deskripsi'),
+            'gambar': gambar_name
+        })
+
         flash('Tipe kamar berhasil diperbarui!', 'success')
         return redirect(url_for('tipe_kamar.index'))
 
     return render_template('tipe_kamar/form.html', action='Edit', tipe=tipe)
 
-@tipe_kamar_bp.route('/hapus/<int:id>', methods=['POST'])
+@tipe_kamar_bp.route('/hapus/<id>', methods=['POST'])
 def hapus(id):
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
 
-    tipe = db.session.execute(db.text("SELECT gambar FROM tipe_kamar WHERE id = :id"), {'id': id}).fetchone()
-    if tipe and tipe.gambar and tipe.gambar != 'default_kamar.jpg':
-        filepath = os.path.join(current_app.root_path, 'static', 'uploads', tipe.gambar)
-        if os.path.exists(filepath):
-            try:
-                os.remove(filepath)
-            except Exception:
-                pass
-
-    db.session.execute(db.text("DELETE FROM tipe_kamar WHERE id = :id"), {'id': id})
-    db.session.commit()
+    firebase_db.reference(f'tipe_kamar/{id}').delete()
     flash('Tipe kamar berhasil dihapus!', 'warning')
     return redirect(url_for('tipe_kamar.index'))
